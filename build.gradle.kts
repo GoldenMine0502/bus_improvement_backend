@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+//import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.springframework.boot") version "2.7.4"
@@ -8,7 +8,7 @@ plugins {
     kotlin("plugin.jpa") version "1.6.21"
 }
 
-group = "kr.goldenmine_bus_improvement"
+group = "kr.goldenmine.bus_improvement_backend"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
@@ -32,14 +32,22 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // gson
+    implementation("com.google.code.gson:gson:2.9.1")
+
+    // https://mvnrepository.com/artifact/com.h2database/h2
+    implementation(group="com.h2database", name="h2", version="2.1.214")
+
+    // https://mvnrepository.com/artifact/mysql/mysql-connector-java
+    implementation(group="mysql", name="mysql-connector-java", version="8.0.30")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict")
-        jvmTarget = "11"
-    }
-}
+//tasks.withType<KotlinCompile> {
+//    kotlinOptions {
+//        freeCompilerArgs = listOf("-Xjsr305=strict")
+//        jvmTarget = "11"
+//    }
+//}
 
 tasks.withType<Test> {
     useJUnitPlatform()

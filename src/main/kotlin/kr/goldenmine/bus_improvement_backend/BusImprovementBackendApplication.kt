@@ -1,4 +1,4 @@
-package kr.goldenmine_bus_improvement.bus_improvement_backend
+package kr.goldenmine.bus_improvement_backend
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
