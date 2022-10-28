@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController
 class BusController @Autowired constructor(
     private val busStopStationSerivce: BusStopStationSerivce
 ){
-
     @RequestMapping(
         value = ["/station"],
         method = [RequestMethod.GET],
