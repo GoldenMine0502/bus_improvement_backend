@@ -1,5 +1,6 @@
-package kr.goldenmine.bus_improvement_backend
+package kr.goldenmine.bus_improvement_backend.models.station
 
+import kr.goldenmine.bus_improvement_backend.util.Point
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -13,6 +14,10 @@ class BusStopStationSerivce @Autowired constructor(
 
     fun list(): List<BusStopStationInfo> {
         return busStopStationRepository.findAll()
+    }
+
+    fun getAllFromTo(start: Point, finish: Point): List<BusStopStationInfo> {
+        return busStopStationRepository.getAllFromTo(start.x, start.y, finish.x, finish.y)
     }
 
     operator fun get(id: Int): BusStopStationInfo? {

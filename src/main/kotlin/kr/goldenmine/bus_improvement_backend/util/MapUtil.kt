@@ -33,6 +33,35 @@ fun distance(
     return sqrt(distance)
 }
 
+
+val TM127 = arrayOf(
+    "+proj=tmerc",
+    "+lat_0=38",
+    "+lon_0=127.0028902777777777776",
+    "+k=1",
+    "+x_0=200000",
+    "+y_0=500000",
+    "+ellps=bessel",
+    "towgs84=-146.43,507.89,681.46"
+)
+
+val EPSG4326 = arrayOf(
+    "+proj=longlat",
+    "+ellps=WGS84",
+    "+datum=WGS84",
+    "+no_defs"
+)
+
+
+fun convertWGS84toTM127(point: Point): Point {
+    val proj = ProjectionFactory.fromPROJ4Specification(TM127)
+
+    val srcProjec = Point2D.Double(point.x, point.y);
+    val dstProject = proj.transform(srcProjec, Point2D.Double())
+
+    return Point(dstProject.x, dstProject.y)
+}
+
 fun convertTM127toWGS84(point: Point): Point {
     /*
             proj4.defs('TM127', "+proj=tmerc +lat_0=38 +lon_0=127.0028902777777777776 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +towgs84=-146.43,507.89,681.46")
@@ -41,25 +70,6 @@ fun convertTM127toWGS84(point: Point): Point {
         proj4.defs('EPSG:2097', "+proj=tmerc +lat_0=38 +lon_0=127 +k=1 +x_0=200000 +y_0=500000 +ellps=bessel +units=m +no_defs +towgs84=-115.80,474.99,674.11,1.16,-2.31,-1.63,6.43");
         proj4.defs('EPSG:4326', "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs");
      */
-
-
-    val TM127 = arrayOf(
-        "+proj=tmerc",
-        "+lat_0=38",
-        "+lon_0=127.0028902777777777776",
-        "+k=1",
-        "+x_0=200000",
-        "+y_0=500000",
-        "+ellps=bessel",
-        "towgs84=-146.43,507.89,681.46"
-    )
-
-    val EPSG4326 = arrayOf(
-        "+proj=longlat",
-        "+ellps=WGS84",
-        "+datum=WGS84",
-        "+no_defs"
-    )
 
     val proj = ProjectionFactory.fromPROJ4Specification(TM127)
 

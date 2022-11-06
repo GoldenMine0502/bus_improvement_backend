@@ -1,4 +1,4 @@
-package kr.goldenmine.bus_improvement_backend
+package kr.goldenmine.bus_improvement_backend.models.station
 
 import com.google.gson.annotations.SerializedName
 import javax.persistence.Column
