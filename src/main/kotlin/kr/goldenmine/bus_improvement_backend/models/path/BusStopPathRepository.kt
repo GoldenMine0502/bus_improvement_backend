@@ -14,7 +14,6 @@ interface BusStopPathRepository : JpaRepository<BusPathInfo, Int> {
             ")")
     fun getAllPathFromTo(startX: Double, startY: Double, finishX: Double, finishY: Double): List<BusPathInfo>
 
-
     @Query("FROM BusPathInfo busPathInfo WHERE busPathInfo.fromId = ?1 AND busPathInfo.toId = ?2",)
     fun getAllPathFromTo(from: String, to: String): List<BusPathInfo>
 }
