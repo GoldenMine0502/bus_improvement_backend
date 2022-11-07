@@ -27,19 +27,19 @@ class BusStopStationInfo(
     @Column(name = "name")
     val name: String? = null,
 
-    @SerializedName("pos_x")
+    @SerializedName("posX")
     @Column(name = "pos_x")
     val posX: Double? = null,
 
-    @SerializedName("pos_y")
+    @SerializedName("posY")
     @Column(name = "pos_y")
     val posY: Double? = null,
 
-    @SerializedName("short_id")
+    @SerializedName("shortId")
     @Column(name = "short_id")
     val shortId: Int? = null,
 
-    @SerializedName("admin_name")
+    @SerializedName("adminName")
     @Column(name = "admin_name")
     val adminName: String? = null,
 ) {

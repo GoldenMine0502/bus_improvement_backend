@@ -1,5 +1,7 @@
 package kr.goldenmine.bus_improvement_backend
 
+import kr.goldenmine.bus_improvement_backend.models.path.BusPathInfo
+import kr.goldenmine.bus_improvement_backend.models.path.BusStopPathSerivce
 import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationInfo
 import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationSerivce
 import kr.goldenmine.bus_improvement_backend.util.Point
@@ -15,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/bus")
 class BusController @Autowired constructor(
-    private val busStopStationSerivce: BusStopStationSerivce
+    private val busStopStationSerivce: BusStopStationSerivce,
+    private val busStopPathSerivce: BusStopPathSerivce
 ){
 
     private val log: Logger = LoggerFactory.getLogger(BusController::class.java)
@@ -35,5 +38,26 @@ class BusController @Autowired constructor(
 //        log.info(finish.toString())
 
         return busStopStationSerivce.getAllFromTo(start, finish)
+    }
+
+    @RequestMapping(
+        value = ["/path"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getAllPaths(x: Double, y: Double, rangeX: Double, rangeY: Double): List<BusPathInfo> {
+        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
+        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
+
+        return busStopPathSerivce.getAllFromTo(start, finish)
+    }
+    @RequestMapping(
+        value = ["/pathspec"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getAllPaths(routeNo: String): List<BusPathInfo> {
+//        log.info("route: $routeNo")
+        return busStopPathSerivce.getAllPathFromRouteNo(routeNo)
     }
 }

@@ -28,6 +28,10 @@ class BusPathInfo(
     @Column(name = "id")
     val id: Int? = null,
 
+    @SerializedName("routeNo")
+    @Column(name = "route_no")
+    var routeNo: String? = null,
+
     @SerializedName("fromId")
     @Column(name = "from_id")
     val fromId: Int? = null,
