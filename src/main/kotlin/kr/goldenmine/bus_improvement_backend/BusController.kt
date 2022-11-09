@@ -1,11 +1,14 @@
 package kr.goldenmine.bus_improvement_backend
 
 import kr.goldenmine.bus_improvement_backend.calc.BusCalculator
+import kr.goldenmine.bus_improvement_backend.models.path.BusPathInfo
 import kr.goldenmine.bus_improvement_backend.models.path.BusStopPathSerivce
 import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationInfo
 import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationSerivce
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughPositionInfo
+import kr.goldenmine.bus_improvement_backend.models.traffic.BusTrafficInfo
+import kr.goldenmine.bus_improvement_backend.models.traffic.BusTrafficSerivce
 import kr.goldenmine.bus_improvement_backend.util.Point
 import kr.goldenmine.bus_improvement_backend.util.convertWGS84toTM127
 import org.slf4j.Logger
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController
 class BusController @Autowired constructor(
     private val busStopStationSerivce: BusStopStationSerivce,
     private val busThroughInfoSerivce: BusThroughInfoSerivce,
+    private val busTrafficSerivce: BusTrafficSerivce,
     private val busStopPathSerivce: BusStopPathSerivce,
     private val busCalculator: BusCalculator
 ){
@@ -64,25 +68,37 @@ class BusController @Autowired constructor(
         return busThroughInfoSerivce.getAllFromTo(start, finish)
     }
 
-//    @RequestMapping(
-//        value = ["/path"],
-//        method = [RequestMethod.GET],
-//        produces = [MediaType.APPLICATION_JSON_VALUE]
-//    )
-//    fun getAllPaths(x: Double, y: Double, rangeX: Double, rangeY: Double): List<BusPathInfo> {
-//        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
-//        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
+    @RequestMapping(
+        value = ["/traffic"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getAllTrafficInfos(x: Double, y: Double, rangeX: Double, rangeY: Double): List<BusTrafficInfo> {
+        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
+        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
+
+        return busTrafficSerivce.getAllFromTo(start, finish)
+    }
+
+    @RequestMapping(
+        value = ["/path"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getAllPaths(x: Double, y: Double, rangeX: Double, rangeY: Double): List<BusPathInfo> {
+        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
+        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
+
+        return busStopPathSerivce.getAllFromTo(start, finish)
+    }
 //
-//        return busStopPathSerivce.getAllFromTo(start, finish)
-//    }
-//
-//    @RequestMapping(
-//        value = ["/pathspec"],
-//        method = [RequestMethod.GET],
-//        produces = [MediaType.APPLICATION_JSON_VALUE]
-//    )
-//    fun getAllPaths(routeNo: String): List<BusPathInfo> {
-////        log.info("route: $routeNo")
-//        return busStopPathSerivce.getAllPathFromRouteNo(routeNo)
-//    }
+    @RequestMapping(
+        value = ["/pathspec"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getAllPaths(routeNo: String): List<BusPathInfo> {
+//        log.info("route: $routeNo")
+        return busStopPathSerivce.getAllPathFromRouteNo(routeNo)
+    }
 }
