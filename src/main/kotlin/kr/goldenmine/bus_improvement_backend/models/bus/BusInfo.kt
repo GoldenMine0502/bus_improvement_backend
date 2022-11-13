@@ -1,4 +1,4 @@
-package kr.goldenmine.bus_improvement_backend.models.stop
+package kr.goldenmine.bus_improvement_backend.models.bus
 
 import com.google.gson.annotations.SerializedName
 import javax.persistence.*
@@ -19,7 +19,7 @@ import javax.persistence.*
 //@Data
 @Entity
 @Table(name = "bus_info")
-class BusStopInfo(
+class BusInfo(
     @Id
     @SerializedName("route_id")
     @Column(name = "route_id")
@@ -35,11 +35,11 @@ class BusStopInfo(
 
     @SerializedName("origin_bus_stop_id")
     @Column(name = "origin_bus_stop_id")
-    val originBusStopId: String? = null,
+    val originBusStopId: Int? = null,
 
     @SerializedName("dest_bus_stop_id")
     @Column(name = "dest_bus_stop_id")
-    val destBusStopId: String? = null,
+    val destBusStopId: Int? = null,
 
     @SerializedName("bus_start_time")
     @Column(name = "bus_start_time")
@@ -63,14 +63,14 @@ class BusStopInfo(
 
     @SerializedName("turn_bus_stop_id")
     @Column(name = "turn_bus_stop_id")
-    val turnBusStopId: String? = null,
+    val turnBusStopId: Int? = null,
 ) {
     override fun hashCode(): Int {
         return routeId.toString().toInt()
     }
 
     override fun equals(other: Any?): Boolean {
-        if(other is BusStopInfo) {
+        if(other is BusInfo) {
             return routeId == other.routeId
         }
 

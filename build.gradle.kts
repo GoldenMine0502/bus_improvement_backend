@@ -34,6 +34,7 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("junit:junit:4.13.2")
     // gson
     implementation("com.google.code.gson:gson:2.9.1")
 
@@ -54,3 +55,7 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+//test {
+//    useJUnitPlatform()
+//}

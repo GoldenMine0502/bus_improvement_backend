@@ -17,8 +17,9 @@ import kotlin.math.*
  * @returns Distance in Meters
  */
 fun distance(
-    latitude1: Double, latitude2: Double, longitude1: Double,
-    longitude2: Double, el1: Double, el2: Double
+    latitude1: Double, latitude2: Double,
+    longitude1: Double, longitude2: Double,
+    el1: Double = 0.0, el2: Double = 0.0
 ): Double {
     val R = 6371 // Radius of the earth
     val latDistance = Math.toRadians(latitude2 - latitude1)
@@ -33,6 +34,16 @@ fun distance(
     return sqrt(distance)
 }
 
+fun distanceTM127(startTM127: Point, finishTM127: Point, el: Point = Point(0.0, 0.0)): Double {
+    val start = convertTM127toWGS84(startTM127)
+    val finish = convertTM127toWGS84(finishTM127)
+
+    return distance(
+        start.y, finish.y,
+        start.x, finish.x,
+        0.0, 0.0
+    )
+}
 
 val TM127 = arrayOf(
     "+proj=tmerc",
