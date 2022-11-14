@@ -17,6 +17,10 @@ class BusCalculatorDijkstraRouteCurve(
     private val busTrafficService: BusTrafficSerivce,
     private val busCalculatorDijkstraMinimumDistance: BusCalculatorDijkstraMinimumDistance,
 ): BusCalculatorDijkstra(busStopInfoService, busStopStationService, busThroughInfoService, busTrafficService) {
+
+    override val type: String
+        get() = "DijkstraRouteCurve"
+
     override fun executeDijkstra(startIndex: Int, endIndex: Int): List<Int> {
         val minimumDistanceFromStartToEnd = getDistance(busCalculatorDijkstraMinimumDistance.executeDijkstra(startIndex, endIndex))
 

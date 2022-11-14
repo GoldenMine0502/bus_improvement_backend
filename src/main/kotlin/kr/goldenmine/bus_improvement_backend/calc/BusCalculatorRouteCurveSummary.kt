@@ -19,4 +19,7 @@ class BusCalculatorRouteCurveSummary(
 
 
     }
+
+    override val type: String
+        get() = "RouteCurveSummary"
 }

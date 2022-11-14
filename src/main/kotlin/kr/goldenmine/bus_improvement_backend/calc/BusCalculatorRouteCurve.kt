@@ -13,8 +13,7 @@ import java.lang.Double.max
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-@Service
-class BusCalculatorRouteCurve(
+abstract class BusCalculatorRouteCurve(
     private val busInfoService: BusInfoSerivce,
     private val busStopStationService: BusStopStationSerivce,
     private val busThroughInfoService: BusThroughInfoSerivce,

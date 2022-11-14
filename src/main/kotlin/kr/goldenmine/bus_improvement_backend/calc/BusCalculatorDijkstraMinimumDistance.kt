@@ -17,6 +17,9 @@ class BusCalculatorDijkstraMinimumDistance(
     private val busTrafficService: BusTrafficSerivce
 ): BusCalculatorDijkstra(busStopInfoService, busStopStationService, busThroughInfoService, busTrafficService) {
 
+    override val type: String
+        get() = "DijkstraMinimumDistance"
+
 //    fun getMinimumDistance(nodes: ArrayList<ArrayList<Node>>, previousNodes: IntArray, startIndex: Int, endIndex: Int): Double {
 //        var current = endIndex
 //        var distanceSum = 0.0

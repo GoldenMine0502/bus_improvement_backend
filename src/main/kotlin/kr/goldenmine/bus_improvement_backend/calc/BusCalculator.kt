@@ -8,8 +8,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
 
-@Service
-class BusCalculator(
+abstract class BusCalculator(
     private val busStopStationService: BusStopStationSerivce,
     private val busThroughInfoSerivce: BusThroughInfoSerivce,
     private val busTrafficSerivce: BusTrafficSerivce
@@ -24,7 +23,7 @@ class BusCalculator(
     protected val stationsShortIdToIdMap = HashMap<Int, Int>()
     protected val trafficIdToTrafficAmountMap = HashMap<Int, Int>()
 
-    fun calculate() {
+    open fun calculate() {
         // 버스정류장 인덱스를 얻기 위한 맵 id to index
         for (stationIndex in stations.indices) {
             val station = stations[stationIndex]
@@ -48,4 +47,5 @@ class BusCalculator(
         }
     }
 
+    abstract val type: String
 }
