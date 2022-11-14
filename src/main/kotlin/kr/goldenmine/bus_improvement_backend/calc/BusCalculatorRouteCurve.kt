@@ -1,7 +1,6 @@
 package kr.goldenmine.bus_improvement_backend.calc
 
 import kr.goldenmine.bus_improvement_backend.models.bus.BusInfo
-import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationInfo
 import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationSerivce
 import kr.goldenmine.bus_improvement_backend.models.bus.BusInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfo
@@ -9,25 +8,27 @@ import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivc
 import kr.goldenmine.bus_improvement_backend.models.traffic.BusTrafficSerivce
 import kr.goldenmine.bus_improvement_backend.util.Point
 import kr.goldenmine.bus_improvement_backend.util.distanceTM127
+import org.springframework.stereotype.Service
 import java.lang.Double.max
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
+@Service
 class BusCalculatorRouteCurve(
     private val busInfoService: BusInfoSerivce,
     private val busStopStationService: BusStopStationSerivce,
-    private val busThroughInfoSerivce: BusThroughInfoSerivce,
-    private val busTrafficSerivce: BusTrafficSerivce,
-): BusCalculator(busStopStationService, busThroughInfoSerivce, busTrafficSerivce) {
+    private val busThroughInfoService: BusThroughInfoSerivce,
+    private val busTrafficService: BusTrafficSerivce,
+): BusCalculator(busStopStationService, busThroughInfoService, busTrafficService) {
 
     protected val endPoints = HashMap<String, Int>()
-    protected val busInfos = busInfoService.list()
+    protected val busList = busInfoService.list()
     protected val routeIdToBusInfo = HashMap<String, BusInfo>()
 
     override fun calculate() {
         super.calculate()
 
-        busInfos.forEach {
+        busList.forEach {
             routeIdToBusInfo[it.routeId!!] = it
         }
 
@@ -52,7 +53,7 @@ class BusCalculatorRouteCurve(
 
         // 각 노선별 최단거리와 경로별 이동시 거리 계산
         // 턴하는거, 가장 먼 정류장, 기점 중 택1
-        for(busInfo in busInfos) {
+        for(busInfo in busList) {
             val startBusStation = stations[busStopStationsMap[busInfo.originBusStopId!!]!!]
             val endBusStation = stations[busStopStationsMap[busInfo.destBusStopId!!]!!]
             val turnBusStation = stations[busStopStationsMap[busInfo.turnBusStopId!!]!!]

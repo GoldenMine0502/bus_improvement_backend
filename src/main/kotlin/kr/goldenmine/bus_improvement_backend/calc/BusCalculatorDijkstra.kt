@@ -1,23 +1,20 @@
 package kr.goldenmine.bus_improvement_backend.calc
 
 import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationSerivce
-import kr.goldenmine.bus_improvement_backend.models.bus.BusInfo
 import kr.goldenmine.bus_improvement_backend.models.bus.BusInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.traffic.BusTrafficSerivce
 import kr.goldenmine.bus_improvement_backend.util.distance
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Service
 import java.util.*
 
-@Service
 abstract class BusCalculatorDijkstra(
     private val busInfoService: BusInfoSerivce,
     private val busStopStationService: BusStopStationSerivce,
-    private val busThroughInfoSerivce: BusThroughInfoSerivce,
-    private val busTrafficSerivce: BusTrafficSerivce
-): BusCalculatorRouteCurve(busInfoService, busStopStationService, busThroughInfoSerivce, busTrafficSerivce) {
+    private val busThroughInfoService: BusThroughInfoSerivce,
+    private val busTrafficService: BusTrafficSerivce
+): BusCalculatorRouteCurve(busInfoService, busStopStationService, busThroughInfoService, busTrafficService) {
 
     private val log: Logger = LoggerFactory.getLogger(BusCalculatorDijkstra::class.java)
 
@@ -57,6 +54,7 @@ abstract class BusCalculatorDijkstra(
 
             // 시작 노드에 도달했다는 뜻이므로 break
             if(previous == current) break
+            current = previous
         }
 
         return previousNodes.reversed()

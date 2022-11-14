@@ -4,7 +4,8 @@ import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationSerivc
 import kr.goldenmine.bus_improvement_backend.models.bus.BusInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.traffic.BusTrafficSerivce
-import kr.goldenmine.bus_improvement_backend.util.distance
+import kr.goldenmine.bus_improvement_backend.util.Point
+import kr.goldenmine.bus_improvement_backend.util.distanceTM127
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -12,10 +13,9 @@ import java.util.*
 class BusCalculatorDijkstraMinimumDistance(
     private val busStopInfoService: BusInfoSerivce,
     private val busStopStationService: BusStopStationSerivce,
-    private val busThroughInfoSerivce: BusThroughInfoSerivce,
-    private val busTrafficSerivce: BusTrafficSerivce
-): BusCalculatorDijkstra(busStopInfoService, busStopStationService, busThroughInfoSerivce, busTrafficSerivce) {
-
+    private val busThroughInfoService: BusThroughInfoSerivce,
+    private val busTrafficService: BusTrafficSerivce
+): BusCalculatorDijkstra(busStopInfoService, busStopStationService, busThroughInfoService, busTrafficService) {
 
 //    fun getMinimumDistance(nodes: ArrayList<ArrayList<Node>>, previousNodes: IntArray, startIndex: Int, endIndex: Int): Double {
 //        var current = endIndex
@@ -60,12 +60,10 @@ class BusCalculatorDijkstraMinimumDistance(
                 if (stationStart.posX != null && stationStart.posY != null &&
                     stationFinish.posX != null && stationFinish.posY != null
                 ) {
-                    val distance = distance(
-                        stationStart.posX, stationFinish.posX,
-                        stationStart.posY, stationFinish.posY,
-                        0.0, 0.0
+                    val distance = distanceTM127(
+                        Point(stationStart.posX, stationFinish.posX),
+                        Point(stationStart.posY, stationFinish.posY)
                     )
-
 
                     nodes[start].add(Node(finish, distance))
                 }
