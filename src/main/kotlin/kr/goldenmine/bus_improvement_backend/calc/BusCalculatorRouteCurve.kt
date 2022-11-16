@@ -20,9 +20,9 @@ abstract class BusCalculatorRouteCurve(
     private val busTrafficService: BusTrafficSerivce,
 ): BusCalculator(busStopStationService, busThroughInfoService, busTrafficService) {
 
-    protected val endPoints = HashMap<String, Int>()
-    protected val busList = busInfoService.list()
-    protected val routeIdToBusInfo = HashMap<String, BusInfo>()
+    val endPoints = HashMap<String, Int>()
+    val busList = busInfoService.list()
+    val routeIdToBusInfo = HashMap<String, BusInfo>()
 
     override fun calculate() {
         super.calculate()

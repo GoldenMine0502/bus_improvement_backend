@@ -15,13 +15,13 @@ abstract class BusCalculator(
 ) {
     private val log: Logger = LoggerFactory.getLogger(BusCalculator::class.java)
 
-    protected val stations = busStopStationService.list()
-    protected val throughs = busThroughInfoSerivce.list()
-    protected val traffics = busTrafficSerivce.list()
+    val stations = busStopStationService.list()
+    val throughs = busThroughInfoSerivce.list()
+    val traffics = busTrafficSerivce.list()
 
-    protected val stationsIdToIndexMap = HashMap<Int, Int>()
-    protected val stationsShortIdToIdMap = HashMap<Int, Int>()
-    protected val trafficIdToTrafficAmountMap = HashMap<Int, Int>()
+    val stationsIdToIndexMap = HashMap<Int, Int>()
+    val stationsShortIdToIdMap = HashMap<Int, Int>()
+    val trafficIdToTrafficAmountMap = HashMap<Int, Int>()
 
     open fun calculate() {
         // 버스정류장 인덱스를 얻기 위한 맵 id to index

@@ -4,7 +4,9 @@ import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationSerivc
 import kr.goldenmine.bus_improvement_backend.models.bus.BusInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.traffic.BusTrafficSerivce
+import kr.goldenmine.bus_improvement_backend.util.Point
 import kr.goldenmine.bus_improvement_backend.util.distance
+import kr.goldenmine.bus_improvement_backend.util.distanceTM127
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.*
