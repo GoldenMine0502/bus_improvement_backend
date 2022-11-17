@@ -2,11 +2,16 @@ package kr.goldenmine.bus_improvement_backend.calc
 
 import kr.goldenmine.bus_improvement_backend.util.Point
 import kr.goldenmine.bus_improvement_backend.util.distanceTM127
-import org.springframework.stereotype.Service
+import kr.goldenmine.bus_improvement_backend.util.infoToString
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class BusSummaryDijkstra(
     private val busCalculatorDijkstra: BusCalculatorDijkstra
 ): BusSummary {
+
+    private val log: Logger = LoggerFactory.getLogger(BusSummaryDijkstra::class.java)
+
     override fun getSummary(): HashMap<String, List<Int>> {
         val list = busCalculatorDijkstra.endPoints
             .asSequence()
@@ -22,7 +27,11 @@ class BusSummaryDijkstra(
                 )
             }.toList()
 
+        log.infoToString(list)
+
         val results = HashMap<String, List<Int>>()
+
+//        var count = 0
 
         for(pair in list) {
             // 그리디한 접근
@@ -32,8 +41,16 @@ class BusSummaryDijkstra(
 
             val result = busCalculatorDijkstra.executeDijkstra(start, finish)
             results[pair.first] = result
+
+//            count++
+//            if(count >= 100) {
+//                count = 0
+//            }
         }
+
+        log.infoToString(results)
 
         return results
     }
 }
+

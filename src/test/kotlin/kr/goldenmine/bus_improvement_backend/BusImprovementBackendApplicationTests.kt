@@ -1,6 +1,7 @@
 package kr.goldenmine.bus_improvement_backend
 
 import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstra
+import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraMinimumDistance
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,7 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner
 class BusImprovementBackendApplicationTests {
 
     @Autowired
-    lateinit var calculator: BusCalculatorDijkstra
+    lateinit var calculator: BusCalculatorDijkstraMinimumDistance
 
     @Test
     fun testCalculator() {

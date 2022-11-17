@@ -20,11 +20,12 @@ abstract class BusCalculatorDijkstra(
 
     private val log: Logger = LoggerFactory.getLogger(BusCalculatorDijkstra::class.java)
 
-    private val routes = HashMap<String, List<Int>>()
+    val routes = HashMap<String, List<Int>>()
 
     override fun calculate() {
         super.calculate()
 
+        var count = 0
         endPoints.forEach { (k, v) ->
             val busInfo = routeIdToBusInfo[k]
 
@@ -37,6 +38,12 @@ abstract class BusCalculatorDijkstra(
 
                     routes[k] = result
                 }
+            }
+
+            count++
+            if(count >= 1) {
+                count = 0
+                log.info("count $k")
             }
         }
     }
@@ -51,11 +58,13 @@ abstract class BusCalculatorDijkstra(
         while(true) {
             val previous = previousIndices[current]
 
+//            log.info("${previousNodes.size}")
             // 시작노드까지 싹싹 긁어서 add
             previousNodes.add(current)
 
             // 시작 노드에 도달했다는 뜻이므로 break
-            if(previous == current) break
+            if(previous == startIndex || previous == current) break
+
             current = previous
         }
 

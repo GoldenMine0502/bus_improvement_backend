@@ -32,12 +32,12 @@ abstract class BusCalculatorRouteCurve(
         }
 
         // 데이터 정리
-        val busStopStationsMap = HashMap<Int, Int>() // station id to station index
+//        val busStopStationsMap = HashMap<Int, Int>() // station id to station index
         val busThroughMap = HashMap<String, ArrayList<BusThroughInfo>>() // route id to list of bus through info
 
         for (through in throughs) {
             if (through.routeId != null && through.busStopStationId != null) {
-                val station = stations[through.busStopStationId]
+                val station = stations[stationsIdToIndexMap[through.busStopStationId]!!]
 
                 if (station.id != null) {
                     val list = busThroughMap[through.routeId]
@@ -53,19 +53,22 @@ abstract class BusCalculatorRouteCurve(
         // 각 노선별 최단거리와 경로별 이동시 거리 계산
         // 턴하는거, 가장 먼 정류장, 기점 중 택1
         for(busInfo in busList) {
-            val startBusStation = stations[busStopStationsMap[busInfo.originBusStopId!!]!!]
-            val endBusStation = stations[busStopStationsMap[busInfo.destBusStopId!!]!!]
-            val turnBusStation = stations[busStopStationsMap[busInfo.turnBusStopId!!]!!]
+            val busStopOriginId = stationsIdToIndexMap[busInfo.originBusStopId]!!
+            val busStopDestinationId = stationsIdToIndexMap[busInfo.destBusStopId]!!
+            val busStopTurnId = stationsIdToIndexMap[busInfo.turnBusStopId]!!
+            val startBusStation = stations[busStopOriginId]
+            val endBusStation = stations[busStopDestinationId]
+            val turnBusStation = stations[busStopTurnId]
 
             val maxDistanceBusThrough = busThroughMap[busInfo.routeId]!!.maxByOrNull {
-                val currentBusStation = stations[busStopStationsMap[it.busStopStationId!!]!!]
+                val currentBusStation = stations[stationsIdToIndexMap[it.busStopStationId!!]!!]
 
                 distanceTM127(
                     Point(startBusStation.posX!!, startBusStation.posY!!),
                     Point(currentBusStation.posX!!, currentBusStation.posY!!)
                 )
             }!!
-            val maxDistanceBusStation = if(maxDistanceBusThrough.busStopStationId != null) stations[busStopStationsMap[maxDistanceBusThrough.busStopStationId]!!] else null
+            val maxDistanceBusStation = if(maxDistanceBusThrough.busStopStationId != null) stations[stationsIdToIndexMap[maxDistanceBusThrough.busStopStationId]!!] else null
 
             val turnDistance = distanceTM127(
                 Point(startBusStation.posX!!, startBusStation.posY!!),

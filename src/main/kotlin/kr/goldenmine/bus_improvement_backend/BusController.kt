@@ -25,12 +25,8 @@ class BusController @Autowired constructor(
     private val busStopStationSerivce: BusStopStationSerivce,
     private val busThroughInfoSerivce: BusThroughInfoSerivce,
     private val busTrafficSerivce: BusTrafficSerivce,
-    private val busStopPathSerivce: BusStopPathSerivce,
-    private val busCalculator: BusCalculator
+    private val busStopPathSerivce: BusStopPathSerivce
 ){
-    init {
-        busCalculator.calculate()
-    }
 
     private val log: Logger = LoggerFactory.getLogger(BusController::class.java)
 
