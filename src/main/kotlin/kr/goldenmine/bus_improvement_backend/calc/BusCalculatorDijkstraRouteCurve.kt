@@ -34,23 +34,28 @@ class BusCalculatorDijkstraRouteCurve(
             val start = stationsIdToIndexMap[throughs[i].busStopStationId]
             val finish = stationsIdToIndexMap[throughs[i + 1].busStopStationId]
 
-
-
             if (start != null && finish != null) {
                 val stationStart = stations[start]
                 val stationFinish = stations[finish]
 
+                val stationEnd = stations[endIndex]
+
                 if (stationStart.posX != null && stationStart.posY != null &&
-                    stationFinish.posX != null && stationFinish.posY != null
+                    stationFinish.posX != null && stationFinish.posY != null &&
+                            stationEnd.posX != null && stationEnd.posY != null
                 ) {
                     val distance = distanceTM127(
                         Point(stationStart.posX, stationFinish.posX),
                         Point(stationStart.posY, stationFinish.posY)
                     )
-                    val minimumDistanceToEnd = getDistance(busCalculatorDijkstraMinimumDistance.executeDijkstra(finish, endIndex))
+                    val distanceToEnd = distanceTM127(
+                        Point(stationFinish.posX, stationEnd.posX),
+                        Point(stationFinish.posY, stationEnd.posY)
+                    )
+//                    val minimumDistanceToEnd = getDistance(busCalculatorDijkstraMinimumDistance.executeDijkstra(finish, endIndex))
                     val traffic = trafficIdToTrafficAmountMap[start] ?: 1
 
-                    nodes[start].add(NodeInfo(finish, minimumDistanceToEnd, traffic, distance))
+                    nodes[start].add(NodeInfo(finish, distanceToEnd, traffic, distance))
                 }
             }
         }

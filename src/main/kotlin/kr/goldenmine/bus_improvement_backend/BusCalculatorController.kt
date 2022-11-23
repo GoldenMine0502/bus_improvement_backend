@@ -17,16 +17,15 @@ import org.springframework.web.bind.annotation.RestController
 class BusCalculatorController(
     val calculators: List<BusCalculator>
 ) {
-
     private val log: Logger = LoggerFactory.getLogger(BusCalculatorController::class.java)
     val summaryDijkstraShortest: HashMap<String, List<Int>>
     init {
-//        calculators.forEach {
-//            log.info("calculating ${it.type}")
-//            it.calculate()
-//        }
+        calculators.forEach {
+            log.info("calculating ${it.type}")
+            it.calculate()
+        }
 
-        calculators.first { it.type == "DijkstraMinimumDistance" }.calculate()
+//        calculators.first { it.type == "DijkstraMinimumDistance" }.calculate()
 
         log.info("all calculated.")
 
@@ -37,15 +36,15 @@ class BusCalculatorController(
     }
 
 
-    @RequestMapping(
-        value = ["/shortest"],
-        method = [RequestMethod.GET],
-        produces = [MediaType.APPLICATION_JSON_VALUE]
-    )
-    fun getAllShortest(): HashMap<String, List<Int>> {
-//        val center = convertWGS84toTM127(Point(x, y))
-//        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
-//        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
-        return summaryDijkstraShortest
-    }
+//    @RequestMapping(
+//        value = ["/shortest"],
+//        method = [RequestMethod.GET],
+//        produces = [MediaType.APPLICATION_JSON_VALUE]
+//    )
+//    fun getAllShortest(): HashMap<String, List<Int>> {
+////        val center = convertWGS84toTM127(Point(x, y))
+////        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
+////        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
+//        return summaryDijkstraShortest
+//    }
 }

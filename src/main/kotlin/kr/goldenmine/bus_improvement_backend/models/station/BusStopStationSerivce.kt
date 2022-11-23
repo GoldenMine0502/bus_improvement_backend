@@ -3,14 +3,20 @@ package kr.goldenmine.bus_improvement_backend.models.station
 import kr.goldenmine.bus_improvement_backend.util.Point
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import kotlin.math.sin
 
 @Service
 class BusStopStationSerivce @Autowired constructor(
     private val busStopStationRepository: BusStopStationRepository
 ) {
-//    fun add(info: BusStopStationInfo): BusStopStationInfo {
-//        return busStopStationRepository.saveAndFlush(info)
-//    }
+    private var singleton: List<BusStopStationInfo>? = null
+
+    fun listSingleton(): List<BusStopStationInfo> {
+        if(singleton == null) {
+            singleton = list()
+        }
+        return singleton!!
+    }
 
     fun list(): List<BusStopStationInfo> {
         return busStopStationRepository.findAll()
