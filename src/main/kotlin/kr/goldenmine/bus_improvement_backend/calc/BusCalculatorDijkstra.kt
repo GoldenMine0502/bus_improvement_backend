@@ -41,7 +41,7 @@ abstract class BusCalculatorDijkstra(
             }
 
             count++
-            if(count >= 1) {
+            if(count >= 10) {
                 count = 0
                 log.info("count $k")
             }

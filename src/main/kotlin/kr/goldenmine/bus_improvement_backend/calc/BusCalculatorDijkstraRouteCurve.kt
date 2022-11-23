@@ -45,12 +45,12 @@ class BusCalculatorDijkstraRouteCurve(
                             stationEnd.posX != null && stationEnd.posY != null
                 ) {
                     val distance = distanceTM127(
-                        Point(stationStart.posX, stationFinish.posX),
-                        Point(stationStart.posY, stationFinish.posY)
+                        Point(stationStart.posX, stationStart.posY),
+                        Point(stationFinish.posX, stationFinish.posY)
                     )
                     val distanceToEnd = distanceTM127(
-                        Point(stationFinish.posX, stationEnd.posX),
-                        Point(stationFinish.posY, stationEnd.posY)
+                        Point(stationFinish.posX, stationFinish.posY),
+                        Point(stationEnd.posX, stationEnd.posY)
                     )
 //                    val minimumDistanceToEnd = getDistance(busCalculatorDijkstraMinimumDistance.executeDijkstra(finish, endIndex))
                     val traffic = trafficIdToTrafficAmountMap[start] ?: 1
@@ -76,6 +76,8 @@ class BusCalculatorDijkstraRouteCurve(
 
         while (!queue.isEmpty()) {
             val current = queue.poll()
+
+//            println(queue.size)
 
             if (minimumCost[current.index] < current.calculateCost(minimumDistanceFromStartToEnd))
                 continue

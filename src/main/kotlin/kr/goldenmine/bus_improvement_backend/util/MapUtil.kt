@@ -1,6 +1,5 @@
 package kr.goldenmine.bus_improvement_backend.util
 
-import com.jhlabs.map.proj.Projection
 import com.jhlabs.map.proj.ProjectionFactory
 import java.awt.geom.Point2D
 import kotlin.math.*
@@ -67,8 +66,8 @@ val EPSG4326 = arrayOf(
 fun convertWGS84toTM127(point: Point): Point {
     val proj = ProjectionFactory.fromPROJ4Specification(TM127)
 
-    val srcProjec = Point2D.Double(point.x, point.y);
-    val dstProject = proj.transform(srcProjec, Point2D.Double())
+    val srcProject = Point2D.Double(point.x, point.y);
+    val dstProject = proj.transform(srcProject, Point2D.Double())
 
     return Point(dstProject.x, dstProject.y)
 }

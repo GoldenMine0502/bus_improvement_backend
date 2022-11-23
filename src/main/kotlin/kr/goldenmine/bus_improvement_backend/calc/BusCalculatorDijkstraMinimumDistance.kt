@@ -65,8 +65,8 @@ class BusCalculatorDijkstraMinimumDistance(
                     throughs[i].routeId == throughs[i + 1].routeId
                 ) {
                     val distance = distanceTM127(
-                        Point(stationStart.posX, stationFinish.posX),
-                        Point(stationStart.posY, stationFinish.posY)
+                        Point(stationStart.posX, stationStart.posY),
+                        Point(stationFinish.posX, stationFinish.posY)
                     )
 
                     nodes[start].add(Node(finish, distance))

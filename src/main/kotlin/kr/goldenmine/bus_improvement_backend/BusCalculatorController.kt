@@ -18,33 +18,49 @@ class BusCalculatorController(
     val calculators: List<BusCalculator>
 ) {
     private val log: Logger = LoggerFactory.getLogger(BusCalculatorController::class.java)
-    val summaryDijkstraShortest: HashMap<String, List<Int>>
-    init {
-        calculators.forEach {
-            log.info("calculating ${it.type}")
-            it.calculate()
-        }
 
-//        calculators.first { it.type == "DijkstraMinimumDistance" }.calculate()
+    val summaryDijkstraShortest: HashMap<String, List<Int>>
+    val summaryDijkstraRouteCurve: HashMap<String, List<Int>>
+
+    init {
+//        calculators.forEach {
+//            log.info("calculating ${it.type}")
+//            it.calculate()
+//        }
+
+        calculators.first { it.type == "DijkstraMinimumDistance" }.calculate()
+//        calculators.first { it.type == "DijkstraRouteCurve" }.calculate()
 
         log.info("all calculated.")
 
         summaryDijkstraShortest = (calculators.first { it.type == "DijkstraMinimumDistance" } as BusCalculatorDijkstra).routes
+        summaryDijkstraRouteCurve = (calculators.first { it.type == "DijkstraRouteCurve" } as BusCalculatorDijkstraRouteCurve).routes
 
 //        summaryDijkstraShortest = BusSummaryDijkstra(calculators.first { it.type == "DijkstraMinimumDistance" } as BusCalculatorDijkstra).getSummary()
         log.info("summary shortest completed.")
     }
 
+    @RequestMapping(
+        value = ["/optimizedroute"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getOptimizedRoute(routeNo: String): List<Int>? {
+//        val center = convertWGS84toTM127(Point(x, y))
+//        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
+//        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
+        return summaryDijkstraRouteCurve[routeNo]
+    }
 
-//    @RequestMapping(
-//        value = ["/shortest"],
-//        method = [RequestMethod.GET],
-//        produces = [MediaType.APPLICATION_JSON_VALUE]
-//    )
-//    fun getAllShortest(): HashMap<String, List<Int>> {
-////        val center = convertWGS84toTM127(Point(x, y))
-////        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
-////        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
-//        return summaryDijkstraShortest
-//    }
+    @RequestMapping(
+        value = ["/shortestroute"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getShortest(routeNo: String): List<Int>? {
+//        val center = convertWGS84toTM127(Point(x, y))
+//        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
+//        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
+        return summaryDijkstraShortest[routeNo]
+    }
 }
