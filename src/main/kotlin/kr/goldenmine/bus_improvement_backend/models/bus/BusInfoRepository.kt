@@ -11,4 +11,6 @@ interface BusInfoRepository : JpaRepository<BusInfo, Int> { //    User findById(
         "SELECT info.routeId FROM BusInfo as info WHERE info.routeNo = :routeNo"
     )
     fun getIdFromNo(routeNo: String): List<String>
+
+    fun getBusInfoByRouteNo(routeNo: String): List<BusInfo>
 }

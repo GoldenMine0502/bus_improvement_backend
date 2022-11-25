@@ -52,27 +52,32 @@ class BusCalculatorDijkstraMinimumDistance(
             nodes.add(ArrayList())
         }
 
-        for (i in 0 until throughs.size - 1) {
-            val start = stationsIdToIndexMap[throughs[i].busStopStationId]
-            val finish = stationsIdToIndexMap[throughs[i + 1].busStopStationId]
+        busThroughMap.forEach { (t, u) ->
+            for (i in 0 until u.size) {
+                val startThroughIndex = i
+                val finishThroughIndex = if(i != u.size - 1) i + 1 else 0
+                val start = stationsIdToIndexMap[u[startThroughIndex].busStopStationId]
+                val finish = stationsIdToIndexMap[u[finishThroughIndex].busStopStationId]
 
-            if (start != null && finish != null) {
-                val stationStart = stations[start]
-                val stationFinish = stations[finish]
+                if (start != null && finish != null) {
+                    val stationStart = stations[start]
+                    val stationFinish = stations[finish]
 
-                if (stationStart.posX != null && stationStart.posY != null &&
-                    stationFinish.posX != null && stationFinish.posY != null &&
-                    throughs[i].routeId == throughs[i + 1].routeId
-                ) {
-                    val distance = distanceTM127(
-                        Point(stationStart.posX, stationStart.posY),
-                        Point(stationFinish.posX, stationFinish.posY)
-                    )
+                    if (stationStart.posX != null && stationStart.posY != null &&
+                        stationFinish.posX != null && stationFinish.posY != null &&
+                        u[startThroughIndex].routeId == u[finishThroughIndex].routeId
+                    ) {
+                        val distance = distanceTM127(
+                            Point(stationStart.posX, stationStart.posY),
+                            Point(stationFinish.posX, stationFinish.posY)
+                        )
 
-                    nodes[start].add(Node(finish, distance))
+                        nodes[start].add(Node(finish, distance))
+                    }
                 }
             }
         }
+
 
         val dist = DoubleArray(stations.size)
         val previous = IntArray(stations.size)

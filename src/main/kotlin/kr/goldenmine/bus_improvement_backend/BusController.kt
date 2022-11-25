@@ -2,6 +2,7 @@ package kr.goldenmine.bus_improvement_backend
 
 import com.google.gson.JsonObject
 import kr.goldenmine.bus_improvement_backend.calc.BusCalculator
+import kr.goldenmine.bus_improvement_backend.models.bus.BusInfo
 import kr.goldenmine.bus_improvement_backend.models.bus.BusInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.path.BusPathInfo
 import kr.goldenmine.bus_improvement_backend.models.path.BusStopPathSerivce
@@ -29,7 +30,7 @@ class BusController @Autowired constructor(
     private val busThroughInfoSerivce: BusThroughInfoSerivce,
     private val busTrafficSerivce: BusTrafficSerivce,
     private val busStopPathSerivce: BusStopPathSerivce
-){
+) {
 
     private val log: Logger = LoggerFactory.getLogger(BusController::class.java)
 
@@ -121,5 +122,21 @@ class BusController @Autowired constructor(
 
         jsonObject.addProperty("routeId", busInfoSerivce.getRouteIdFromRouteNumber(routeNo).toString())
         return jsonObject.toString()
+    }
+
+    @RequestMapping(
+        value = ["/stationindex"],
+        method = [RequestMethod.GET]
+    )
+    fun getStationIndex(index: Int): BusStopStationInfo {
+        return busStopStationSerivce.list()[index]
+    }
+
+    @RequestMapping(
+        value = ["/businfo"],
+        method = [RequestMethod.GET]
+    )
+    fun getStationIndex(routeNo: String): BusInfo {
+        return busInfoSerivce.getBusInfoFromRouteNo(routeNo)
     }
 }

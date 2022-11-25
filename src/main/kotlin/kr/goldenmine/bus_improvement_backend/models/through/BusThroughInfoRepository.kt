@@ -17,6 +17,8 @@ interface BusThroughInfoRepository : JpaRepository<BusThroughInfo, Int> { //    
 //            ")"
 //    )
 
+    fun getBusThroughInfoByRouteIdEquals(routeId: String): List<BusThroughInfo>
+
     // @Query("SELECT new my.class.package.Chars(c.name,c.image) FROM characters c")
     @Query(
         "SELECT new kr.goldenmine.bus_improvement_backend.models.through.BusThroughPositionInfo(through.routeId, through.busStopStationId, through.busStopSequence, station.posX, station.posY) " +

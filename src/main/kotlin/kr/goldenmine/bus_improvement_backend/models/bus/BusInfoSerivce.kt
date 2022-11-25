@@ -15,6 +15,10 @@ class BusInfoSerivce @Autowired constructor(
         return busInfoRepository.findAll()
     }
 
+    fun getBusInfoFromRouteNo(routeNo: String): BusInfo {
+        return busInfoRepository.getBusInfoByRouteNo(routeNo).first()
+    }
+
     fun getRouteIdFromRouteNumber(routeNo: String): String? {
         return busInfoRepository.getIdFromNo(routeNo).firstOrNull()
     }

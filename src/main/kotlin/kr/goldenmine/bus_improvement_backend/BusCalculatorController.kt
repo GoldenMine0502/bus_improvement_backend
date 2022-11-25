@@ -1,12 +1,11 @@
 package kr.goldenmine.bus_improvement_backend
 
 import kr.goldenmine.bus_improvement_backend.calc.*
-import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationInfo
-import kr.goldenmine.bus_improvement_backend.util.Point
-import kr.goldenmine.bus_improvement_backend.util.convertWGS84toTM127
+import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationSerivce
+import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfo
+import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -15,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/calculate")
 class BusCalculatorController(
-    val calculators: List<BusCalculator>
+    val calculators: List<BusCalculator>,
+    val busThroughInfoSerivce: BusThroughInfoSerivce,
+    val busStopStationSerivce: BusStopStationSerivce,
 ) {
     private val log: Logger = LoggerFactory.getLogger(BusCalculatorController::class.java)
 
@@ -45,11 +46,29 @@ class BusCalculatorController(
         method = [RequestMethod.GET],
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun getOptimizedRoute(routeNo: String): List<Int>? {
+    fun getOptimizedRoute(routeId: String): List<Int>? {
 //        val center = convertWGS84toTM127(Point(x, y))
 //        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
 //        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
-        return summaryDijkstraRouteCurve[routeNo]
+        return summaryDijkstraRouteCurve[routeId]
+    }
+
+
+    @RequestMapping(
+        value = ["/originalroute"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getOriginal(routeId: String): List<Int>? {
+        val sequences = busThroughInfoSerivce.getThroughSequencesFromRouteId(routeId)
+
+        return sequences
+            .asSequence()
+            .map {
+                BusCalculator.stationsIdToIndexMap[it.busStopStationId]
+            }
+            .filterNotNull()
+            .toList()
     }
 
     @RequestMapping(
@@ -57,10 +76,25 @@ class BusCalculatorController(
         method = [RequestMethod.GET],
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun getShortest(routeNo: String): List<Int>? {
-//        val center = convertWGS84toTM127(Point(x, y))
-//        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
-//        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
-        return summaryDijkstraShortest[routeNo]
+    fun getShortest(routeId: String): List<Int>? {
+        return summaryDijkstraShortest[routeId]
+    }
+
+    @RequestMapping(
+        value = ["/allshortestroute"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getShortestAll(): HashMap<String, List<Int>> {
+        return summaryDijkstraShortest
+    }
+
+    @RequestMapping(
+        value = ["/dijkstra"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun executeDijkstra(startIndex: Int, finishIndex: Int): List<Int> {
+        return (calculators.first { it.type == "DijkstraMinimumDistance" } as BusCalculatorDijkstra).executeDijkstra(startIndex, finishIndex)
     }
 }

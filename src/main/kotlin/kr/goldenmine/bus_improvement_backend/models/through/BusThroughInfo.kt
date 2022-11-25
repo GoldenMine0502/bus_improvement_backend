@@ -33,4 +33,6 @@ class BusThroughInfo(
     @Column(name = "bus_stop_sequence")
     val busStopSequence: Int? = null,
     ) {
+
+
 }

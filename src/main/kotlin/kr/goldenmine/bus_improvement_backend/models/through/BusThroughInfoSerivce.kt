@@ -18,6 +18,10 @@ class BusThroughInfoSerivce @Autowired constructor(
         return singleton!!
     }
 
+    fun getThroughSequencesFromRouteId(routeId: String): List<BusThroughInfo> {
+        return busThroughInfoRepository.getBusThroughInfoByRouteIdEquals(routeId)
+    }
+
     fun list(): List<BusThroughInfo> {
         return busThroughInfoRepository.findAll()
     }

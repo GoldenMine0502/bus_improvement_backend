@@ -6,6 +6,8 @@ import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivc
 import kr.goldenmine.bus_improvement_backend.models.traffic.BusTrafficSerivce
 import kr.goldenmine.bus_improvement_backend.util.Point
 import kr.goldenmine.bus_improvement_backend.util.distanceTM127
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -17,6 +19,8 @@ class BusCalculatorDijkstraRouteCurve(
     private val busTrafficService: BusTrafficSerivce,
     private val busCalculatorDijkstraMinimumDistance: BusCalculatorDijkstraMinimumDistance,
 ): BusCalculatorDijkstra(busStopInfoService, busStopStationService, busThroughInfoService, busTrafficService) {
+
+    private val log: Logger = LoggerFactory.getLogger(BusCalculatorDijkstraRouteCurve::class.java)
 
     override val type: String
         get() = "DijkstraRouteCurve"
@@ -30,7 +34,7 @@ class BusCalculatorDijkstraRouteCurve(
             nodes.add(ArrayList())
         }
 
-        for (i in 0 until throughs.size - 1) {
+        for (i in throughs.indices) {
             val start = stationsIdToIndexMap[throughs[i].busStopStationId]
             val finish = stationsIdToIndexMap[throughs[i + 1].busStopStationId]
 
@@ -42,7 +46,8 @@ class BusCalculatorDijkstraRouteCurve(
 
                 if (stationStart.posX != null && stationStart.posY != null &&
                     stationFinish.posX != null && stationFinish.posY != null &&
-                            stationEnd.posX != null && stationEnd.posY != null
+                            stationEnd.posX != null && stationEnd.posY != null &&
+                            stationStart.shortId != stationEnd.shortId // 기점-종점간 연결상태
                 ) {
                     val distance = distanceTM127(
                         Point(stationStart.posX, stationStart.posY),
@@ -77,7 +82,7 @@ class BusCalculatorDijkstraRouteCurve(
         while (!queue.isEmpty()) {
             val current = queue.poll()
 
-//            println(queue.size)
+//            log.info("${queue.size} ${(current.calculateCost(minimumDistanceFromStartToEnd) * 100).toInt()} $current")
 
             if (minimumCost[current.index] < current.calculateCost(minimumDistanceFromStartToEnd))
                 continue
@@ -119,6 +124,10 @@ class BusCalculatorDijkstraRouteCurve(
         private val totalDistanceEstimated = distanceSum + minimumDistanceToEnd
 
         fun calculateCost(minimumDistance: Double) =
-            (totalDistanceEstimated / (minimumDistance)) * distanceSum / usersSum
+            ((totalDistanceEstimated / (minimumDistance)) * (distanceSum / usersSum).coerceAtLeast(10.0))
+
+        override fun toString(): String {
+            return "$index $usersSum $minimumDistanceToEnd $distanceSum"
+        }
     }
 }

@@ -5,7 +5,6 @@ import kr.goldenmine.bus_improvement_backend.models.bus.BusInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.traffic.BusTrafficSerivce
 import kr.goldenmine.bus_improvement_backend.util.Point
-import kr.goldenmine.bus_improvement_backend.util.distance
 import kr.goldenmine.bus_improvement_backend.util.distanceTM127
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -25,25 +24,23 @@ abstract class BusCalculatorDijkstra(
     override fun calculate() {
         super.calculate()
 
-        var count = 0
-        endPoints.forEach { (k, v) ->
+        turnPoints.forEach { (k, v) ->
+            log.info("calculating $k")
             val busInfo = routeIdToBusInfo[k]
 
             if(busInfo != null) {
                 val stationStart = stationsIdToIndexMap[busInfo.originBusStopId!!]
-                val stationFinish = stationsIdToIndexMap[v]
+                val stationTurn = stationsIdToIndexMap[v]
+                val stationEnd = stationsIdToIndexMap[endPoints[k]]
 
-                if(stationStart != null && stationFinish != null) {
-                    val result = executeDijkstra(stationStart, stationFinish)
+                if(stationStart != null && stationTurn != null && stationEnd != null) {
+                    val result = ArrayList(executeDijkstra(stationStart, stationTurn))
+                    val result2 = ArrayList(executeDijkstra(stationTurn, stationEnd))
+
+                    result.addAll(result2)
 
                     routes[k] = result
                 }
-            }
-
-            count++
-            if(count >= 10) {
-                count = 0
-                log.info("count $k")
             }
         }
     }
@@ -58,15 +55,20 @@ abstract class BusCalculatorDijkstra(
         while(true) {
             val previous = previousIndices[current]
 
-//            log.info("${previousNodes.size}")
+//            log.info("$previous, $current, $startIndex, $endIndex")
+
             // 시작노드까지 싹싹 긁어서 add
             previousNodes.add(current)
 
             // 시작 노드에 도달했다는 뜻이므로 break
-            if(previous == startIndex || previous == current) break
+            if(previous == startIndex/* || previous == current*/) break
+
+//            if(previous == current) sleep(1000L)
 
             current = previous
         }
+
+        previousNodes.add(startIndex)
 
         return previousNodes.reversed()
     }
@@ -81,10 +83,9 @@ abstract class BusCalculatorDijkstra(
             val stationStart = stations[start]
             val stationFinish = stations[finish]
 
-            val distance = distance(
-                stationStart.posX!!, stationFinish.posX!!,
-                stationStart.posY!!, stationFinish.posY!!,
-                0.0, 0.0
+            val distance = distanceTM127(
+                Point(stationStart.posX!!, stationStart.posY!!),
+                Point(stationFinish.posX!!, stationFinish.posY!!)
             )
 
             totalDistance += distance
