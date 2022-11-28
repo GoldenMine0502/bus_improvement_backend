@@ -25,13 +25,14 @@ abstract class BusCalculatorDijkstra(
         super.calculate()
 
         turnPoints.forEach { (k, v) ->
-            log.info("calculating $k")
             val busInfo = routeIdToBusInfo[k]
 
             if(busInfo != null) {
                 val stationStart = stationsIdToIndexMap[busInfo.originBusStopId!!]
                 val stationTurn = stationsIdToIndexMap[v]
                 val stationEnd = stationsIdToIndexMap[endPoints[k]]
+
+                log.info("calculating $k $stationStart $stationTurn $stationEnd")
 
                 if(stationStart != null && stationTurn != null && stationEnd != null) {
                     val result = ArrayList(executeDijkstra(stationStart, stationTurn))

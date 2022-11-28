@@ -1,5 +1,6 @@
 package kr.goldenmine.bus_improvement_backend
 
+import com.google.gson.JsonObject
 import kr.goldenmine.bus_improvement_backend.calc.*
 import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationSerivce
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfo
@@ -87,6 +88,79 @@ class BusCalculatorController(
     )
     fun getShortestAll(): HashMap<String, List<Int>> {
         return summaryDijkstraShortest
+    }
+
+    @RequestMapping(
+        value = ["/stat/allshortestroute"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getStatForShortest(): String {
+        val calculator = calculators.first { it.type == "DijkstraMinimumDistance" } as BusCalculatorDijkstra
+
+        val stationsArray = IntArray(calculator.stations.size)
+        var totalCount = 0
+
+        calculator.routes.forEach { (t, u) ->
+            u.forEach {
+                stationsArray[it]++
+                totalCount++
+            }
+        }
+
+        var usedStations = 0
+
+        for(count in stationsArray.indices) {
+            if(count > 0) {
+                usedStations++
+            }
+        }
+
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("usedStations", usedStations)
+        jsonObject.addProperty("totalNodes", totalCount)
+
+        return jsonObject.toString()
+    }
+
+    @RequestMapping(
+        value = ["/stat/originalroute"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getStatForOriginal(): String {
+        val throughs = busThroughInfoSerivce.listSingleton()
+
+        val calculator = calculators.first { it.type == "DijkstraMinimumDistance" } as BusCalculatorDijkstra
+
+        val stationsArray = IntArray(calculator.stations.size)
+
+        var totalCount = 0
+
+        for(index in throughs.indices) {
+            val first = throughs[index]
+            val second = if(index < throughs.size - 1) throughs[index + 1] else first
+
+            if(first.routeId == second.routeId) {
+                val stationIndex = BusCalculator.stationsIdToIndexMap[first.busStopStationId]!!
+                stationsArray[stationIndex]++
+                totalCount++
+            }
+        }
+
+        var usedStations = 0
+
+        for(count in stationsArray.indices) {
+            if(count > 0) {
+                usedStations++
+            }
+        }
+
+        val jsonObject = JsonObject()
+        jsonObject.addProperty("usedStations", usedStations)
+        jsonObject.addProperty("totalNodes", totalCount)
+
+        return jsonObject.toString()
     }
 
     @RequestMapping(

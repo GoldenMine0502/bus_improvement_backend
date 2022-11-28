@@ -10,7 +10,6 @@ import kr.goldenmine.bus_improvement_backend.util.Point
 import kr.goldenmine.bus_improvement_backend.util.distanceTM127
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.lang.Double.max
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -57,63 +56,78 @@ abstract class BusCalculatorRouteCurve(
         // 각 노선별 최단거리와 경로별 이동시 거리 계산
         // 턴하는거, 가장 먼 정류장, 기점 중 택1
 
-        for (busInfo in busList) {
-            val busStopOriginId = stationsIdToIndexMap[busInfo.originBusStopId]!!
-            val busStopTurnId = stationsIdToIndexMap[busInfo.turnBusStopId]!!
-            val busStopDestId = stationsIdToIndexMap[busInfo.destBusStopId]!!
-            val turnBusStation = stations[busStopTurnId]
-
-            if(busInfo.routeId != null) {
-                turnPoints[busInfo.routeId] = busInfo.turnBusStopId!!
-                endPoints[busInfo.routeId] = busThroughMap[busInfo.routeId]?.last()?.busStopStationId!!
-            }
-        }
-//        for(busInfo in busList) {
+//        for (busInfo in busList) {
 //            val busStopOriginId = stationsIdToIndexMap[busInfo.originBusStopId]!!
-//            val busStopDestinationId = stationsIdToIndexMap[busInfo.destBusStopId]!!
 //            val busStopTurnId = stationsIdToIndexMap[busInfo.turnBusStopId]!!
-//
-//            val startBusStation = stations[busStopOriginId]
-//            val endBusStation = stations[busStopDestinationId]
+//            val busStopDestId = stationsIdToIndexMap[busInfo.destBusStopId]!!
 //            val turnBusStation = stations[busStopTurnId]
 //
-//            val maxDistanceBusThrough = busThroughMap[busInfo.routeId]!!.maxByOrNull {
-//                val currentBusStation = stations[stationsIdToIndexMap[it.busStopStationId!!]!!]
-//
-//                distanceTM127(
-//                    Point(startBusStation.posX!!, startBusStation.posY!!),
-//                    Point(currentBusStation.posX!!, currentBusStation.posY!!)
-//                )
-//            }!!
-//            val maxDistanceBusStation = if(maxDistanceBusThrough.busStopStationId != null) stations[stationsIdToIndexMap[maxDistanceBusThrough.busStopStationId]!!] else null
-//
-//            val turnDistance = distanceTM127(
-//                Point(startBusStation.posX!!, startBusStation.posY!!),
-//                Point(turnBusStation.posX!!, turnBusStation.posY!!)
-//            )
-//
+//            if(busInfo.routeId != null) {
+//                turnPoints[busInfo.routeId] = busInfo.turnBusStopId!!
+//                endPoints[busInfo.routeId] = busThroughMap[busInfo.routeId]?.last()?.busStopStationId!!
+//            }
+//        }
+
+        for(busInfo in busList) {
+            val busStopOriginIndex = stationsIdToIndexMap[busInfo.originBusStopId]!!
+            val busStopTurnIndex = stationsIdToIndexMap[busInfo.turnBusStopId]!!
+            val busStopDestinationIndex =
+                if(busInfo.originBusStopId != busInfo.destBusStopId)
+                    stationsIdToIndexMap[busInfo.destBusStopId]!!
+                else
+                    stationsIdToIndexMap[busThroughMap[busInfo.routeId]?.last()?.busStopStationId!!]!!
+
+            val startBusStation = stations[busStopOriginIndex]
+//            val endBusStation = stations[busStopDestinationIndex]
+            val turnBusStation = stations[busStopTurnIndex]
+
+            val maxDistanceBusThrough = busThroughMap[busInfo.routeId]!!.maxByOrNull {
+                val currentBusStation = stations[stationsIdToIndexMap[it.busStopStationId!!]!!]
+
+                distanceTM127(
+                    Point(startBusStation.posX!!, startBusStation.posY!!),
+                    Point(currentBusStation.posX!!, currentBusStation.posY!!)
+                )
+            }!!
+            val maxDistanceBusStation =
+                if(maxDistanceBusThrough.busStopStationId != null)
+                    stations[stationsIdToIndexMap[maxDistanceBusThrough.busStopStationId]!!]
+                else
+                    null
+
+            val turnDistance = distanceTM127(
+                Point(startBusStation.posX!!, startBusStation.posY!!),
+                Point(turnBusStation.posX!!, turnBusStation.posY!!)
+            )
+
 //            val endDistance = distanceTM127(
 //                Point(startBusStation.posX, startBusStation.posY),
 //                Point(endBusStation.posX!!, endBusStation.posY!!)
 //            )
-//
-//            val maxThroughDistance = if(maxDistanceBusStation != null) distanceTM127(
-//                Point(startBusStation.posX, startBusStation.posY),
-//                Point(maxDistanceBusStation.posX!!, maxDistanceBusStation.posY!!)
-//            ) else 0.0
-//
-//            val endPoint = if(max(turnDistance, endDistance) * 2 < maxThroughDistance) {
-//                maxDistanceBusThrough.busStopStationId
-//            } else if(turnDistance <= endDistance) {
-//                busInfo.destBusStopId
-//            } else {
-//                busInfo.turnBusStopId
-//            }
-//
-//            if(busInfo.routeId != null && endPoint != null) {
-//                turnPoints[busInfo.routeId] = endPoint
-//            }
-//        }
+
+            val maxThroughDistance = if(maxDistanceBusStation != null) distanceTM127(
+                Point(startBusStation.posX, startBusStation.posY),
+                Point(maxDistanceBusStation.posX!!, maxDistanceBusStation.posY!!)
+            ) else 0.0
+
+            val turnPoint = if(turnDistance * 2 < maxThroughDistance) {
+                maxDistanceBusThrough.busStopStationId
+            } else {
+                busInfo.turnBusStopId
+            }
+
+            val endPoint =
+//                if(busInfo.originBusStopId != busInfo.destBusStopId)
+//                    busInfo.destBusStopId
+//                else
+                    busThroughMap[busInfo.routeId]?.last()?.busStopStationId!!
+
+
+            if(busInfo.routeId != null && turnPoint != null && endPoint != null) {
+                turnPoints[busInfo.routeId] = turnPoint
+                endPoints[busInfo.routeId] = endPoint
+            }
+        }
 
 
         // 기점-종점간 잇기. 왜냐하면 이렇게 하지 않을 때 연결이 안되는 경우가 있음.
