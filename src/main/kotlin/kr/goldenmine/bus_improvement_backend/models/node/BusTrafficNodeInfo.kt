@@ -122,4 +122,10 @@ class BusTrafficNodeInfo(
     val time23: Int? = null,
 
 ) {
+    fun getTotal(): Int {
+        return (time00 ?: 0) + (time01 ?: 0) + (time02 ?: 0) + (time03 ?: 0) + (time04 ?: 0) + (time05 ?: 0) +
+                (time06 ?: 0) + (time07 ?: 0) + (time08 ?: 0) + (time09 ?: 0) + (time10 ?: 0) + (time11 ?: 0) +
+                (time12 ?: 0) + (time13 ?: 0) + (time14 ?: 0) + (time15 ?: 0) + (time16 ?: 0) + (time17 ?: 0) +
+                (time18 ?: 0) + (time19 ?: 0) + (time20 ?: 0) + (time21 ?: 0) + (time22 ?: 0) + (time23 ?: 0)
+    }
 }

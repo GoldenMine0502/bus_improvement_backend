@@ -26,6 +26,7 @@ abstract class BusCalculatorRouteCurve(
     val endPoints = HashMap<String, Int>()
     val busList = busInfoService.list()
     val routeIdToBusInfo = HashMap<String, BusInfo>()
+    val routeNoToBusInfo = HashMap<String, BusInfo>()
     val busThroughMap = HashMap<String, ArrayList<BusThroughInfo>>() // route id to list of bus through info
 
     override fun calculate() {
@@ -33,6 +34,7 @@ abstract class BusCalculatorRouteCurve(
 
         busList.forEach {
             routeIdToBusInfo[it.routeId!!] = it
+            routeNoToBusInfo[it.routeNo!!] = it
         }
 
         // 데이터 정리

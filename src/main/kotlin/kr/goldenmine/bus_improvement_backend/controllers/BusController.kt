@@ -1,7 +1,6 @@
-package kr.goldenmine.bus_improvement_backend
+package kr.goldenmine.bus_improvement_backend.controllers
 
 import com.google.gson.JsonObject
-import kr.goldenmine.bus_improvement_backend.calc.BusCalculator
 import kr.goldenmine.bus_improvement_backend.models.bus.BusInfo
 import kr.goldenmine.bus_improvement_backend.models.bus.BusInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.path.BusPathInfo
