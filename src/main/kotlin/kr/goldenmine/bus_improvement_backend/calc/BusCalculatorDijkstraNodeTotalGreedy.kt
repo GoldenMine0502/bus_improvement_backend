@@ -32,8 +32,9 @@ class BusCalculatorDijkstraNodeTotalGreedy(
         get() = "DijkstraNodeTotal"
 
     lateinit var adjointMatrixUsers: Array<IntArray>
+    var totalUsage = 0
 
-    var busTransfer = 40
+    var busTransfer = 30
     val busTimes = HashMap<String, Int>()
 
     override fun calculatePre() {
@@ -82,6 +83,7 @@ class BusCalculatorDijkstraNodeTotalGreedy(
                 val finishIndex = lastSequences[start.sequence + 1]
 
                 adjointMatrixUsers[startIndex][finishIndex] += total
+                totalUsage += total
             } else {
                 lastSequences.clear()
                 log.info("routeNo: ${finish.routeNo} ${routeNoToBusInfo[finish.routeNo!!]?.routeId} ${start.id}")

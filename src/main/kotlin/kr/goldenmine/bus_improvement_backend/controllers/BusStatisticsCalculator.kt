@@ -1,5 +1,6 @@
 package kr.goldenmine.bus_improvement_backend.controllers
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kr.goldenmine.bus_improvement_backend.calc.BusCalculator
 import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraMinimumDistance
@@ -122,6 +123,7 @@ class BusStatisticsCalculator(
         return jsonObject.toString()
     }
 
+    // model 3
     @RequestMapping(
         value = ["/allnodegreedyroute"],
         method = [RequestMethod.GET],
@@ -160,11 +162,28 @@ class BusStatisticsCalculator(
 
         val jsonObject = JsonObject()
 
-//        val jsonArray = JsonArray()
-//        for(index in stationsArray.indices) {
-//            jsonArray.add(stationsArray[index])
-//        }
-//        jsonObject.add("array", jsonArray)
+        var remain = 0
+        val counts = ArrayList<Int>()
+        repeat(51) {
+            counts.add(0)
+        }
+        calculator.adjointMatrixUsers.forEach { array ->
+            array.forEach {
+                remain += it
+                if(it > 0) {
+                    val k = (it / 500).coerceAtMost(50)
+                    counts[k]++
+                }
+            }
+        }
+        val jsonArray = JsonArray()
+        for(index in counts.indices) {
+            jsonArray.add(counts[index])
+        }
+
+        jsonObject.addProperty("totalUsers", calculator.totalUsage)
+        jsonObject.addProperty("remainUsers", remain)
+        jsonObject.add("histogram500", jsonArray)
         jsonObject.addProperty("usedStations", usedStations)
         jsonObject.addProperty("totalDistance", distanceSum)
         jsonObject.addProperty("totalNodes", totalCount)

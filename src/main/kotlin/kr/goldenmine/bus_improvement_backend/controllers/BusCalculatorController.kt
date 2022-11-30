@@ -71,6 +71,18 @@ class BusCalculatorController(
     }
 
     @RequestMapping(
+        value = ["/alldijkstraroute"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getAllDijkstraRoute(): HashMap<String, List<Int>> {
+//        val center = convertWGS84toTM127(Point(x, y))
+//        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
+//        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
+        return busCalculatorDijkstraNodeTotal.routes
+    }
+
+    @RequestMapping(
         value = ["/dijkstragreedyroute"],
         method = [RequestMethod.GET],
         produces = [MediaType.APPLICATION_JSON_VALUE]
@@ -80,6 +92,18 @@ class BusCalculatorController(
 //        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
 //        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
         return busCalculatorDijkstraNodeTotalGreedy.routes[routeId]
+    }
+
+    @RequestMapping(
+        value = ["/alldijkstragreedyroute"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getAllDijkstraGreedyRoute(): HashMap<String, List<Int>> {
+//        val center = convertWGS84toTM127(Point(x, y))
+//        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
+//        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
+        return busCalculatorDijkstraNodeTotalGreedy.routes
     }
 
     @RequestMapping(
