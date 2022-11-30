@@ -128,4 +128,9 @@ class BusTrafficNodeInfo(
                 (time12 ?: 0) + (time13 ?: 0) + (time14 ?: 0) + (time15 ?: 0) + (time16 ?: 0) + (time17 ?: 0) +
                 (time18 ?: 0) + (time19 ?: 0) + (time20 ?: 0) + (time21 ?: 0) + (time22 ?: 0) + (time23 ?: 0)
     }
+
+    override fun toString(): String {
+        return "BusTrafficNodeInfo(id=$id, routeNo=$routeNo, sequence=$sequence, time00=$time00, time01=$time01, time02=$time02, time03=$time03, time04=$time04, time05=$time05, time06=$time06, time07=$time07, time08=$time08, time09=$time09, time10=$time10, time11=$time11, time12=$time12, time13=$time13, time14=$time14, time15=$time15, time16=$time16, time17=$time17, time18=$time18, time19=$time19, time20=$time20, time21=$time21, time22=$time22, time23=$time23)"
+    }
+
 }

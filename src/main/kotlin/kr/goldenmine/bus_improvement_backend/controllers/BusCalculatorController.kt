@@ -13,11 +13,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/calculate")
 class BusCalculatorController(
-    val busThroughInfoSerivce: BusThroughInfoSerivce,
-    val busStopStationSerivce: BusStopStationSerivce,
+    val busThroughInfoService: BusThroughInfoSerivce,
+    val busStopStationService: BusStopStationSerivce,
 
     val busCalculatorDijkstraMinimumDistance: BusCalculatorDijkstraMinimumDistance,
     val busCalculatorDijkstraNodeTotal: BusCalculatorDijkstraNodeTotal,
+    val busCalculatorDijkstraNodeTotalGreedy: BusCalculatorDijkstraNodeTotalGreedy,
 ) {
     private val log: Logger = LoggerFactory.getLogger(BusCalculatorController::class.java)
 
@@ -30,8 +31,23 @@ class BusCalculatorController(
 //        calculators.first { it.type == "DijkstraMinimumDistance" }.calculate()
 //        calculators.first { it.type == "DijkstraRouteCurve" }.calculate()
 
+        log.info("calculating minimumdistance")
         busCalculatorDijkstraMinimumDistance.calculate()
-        busCalculatorDijkstraNodeTotal.calculate()
+
+        val t1 = Thread {
+            log.info("calculating nodetotal")
+            busCalculatorDijkstraNodeTotal.calculate()
+        }
+
+        val t2 = Thread {
+            log.info("calculating nodetotalgreedy")
+            busCalculatorDijkstraNodeTotalGreedy.calculate()
+        }
+
+        t1.start()
+        t2.start()
+        t1.join()
+        t2.join()
 
         log.info("all calculated.")
 
@@ -39,21 +55,32 @@ class BusCalculatorController(
 //        summaryDijkstraRouteCurve = (calculators.first { it.type == "DijkstraRouteCurve" } as BusCalculatorDijkstraRouteCurve).routes
 
 //        summaryDijkstraShortest = BusSummaryDijkstra(calculators.first { it.type == "DijkstraMinimumDistance" } as BusCalculatorDijkstra).getSummary()
-        log.info("summary shortest completed.")
+//        log.info("summary shortest completed.")
     }
 
     @RequestMapping(
-        value = ["/optimizedroute"],
+        value = ["/dijkstraroute"],
         method = [RequestMethod.GET],
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun getOptimizedRoute(routeId: String): List<Int>? {
+    fun getDijkstraRoute(routeId: String): List<Int>? {
 //        val center = convertWGS84toTM127(Point(x, y))
 //        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
 //        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
         return busCalculatorDijkstraNodeTotal.routes[routeId]
     }
 
+    @RequestMapping(
+        value = ["/dijkstragreedyroute"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getDijkstraGreedyRoute(routeId: String): List<Int>? {
+//        val center = convertWGS84toTM127(Point(x, y))
+//        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
+//        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
+        return busCalculatorDijkstraNodeTotalGreedy.routes[routeId]
+    }
 
     @RequestMapping(
         value = ["/originalroute"],
@@ -61,7 +88,7 @@ class BusCalculatorController(
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun getOriginal(routeId: String): List<Int>? {
-        val sequences = busThroughInfoSerivce.getThroughSequencesFromRouteId(routeId)
+        val sequences = busThroughInfoService.getThroughSequencesFromRouteId(routeId)
 
         return sequences
             .asSequence()

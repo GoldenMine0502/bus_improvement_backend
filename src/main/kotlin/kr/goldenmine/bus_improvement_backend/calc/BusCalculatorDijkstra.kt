@@ -1,5 +1,6 @@
 package kr.goldenmine.bus_improvement_backend.calc
 
+import kr.goldenmine.bus_improvement_backend.models.bus.BusInfo
 import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationSerivce
 import kr.goldenmine.bus_improvement_backend.models.bus.BusInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
@@ -15,35 +16,69 @@ abstract class BusCalculatorDijkstra(
     private val busStopStationService: BusStopStationSerivce,
     private val busThroughInfoService: BusThroughInfoSerivce,
     private val busTrafficService: BusTrafficSerivce
-): BusCalculatorRouteCurve(busInfoService, busStopStationService, busThroughInfoService, busTrafficService) {
+) : BusCalculatorRouteCurve(busInfoService, busStopStationService, busThroughInfoService, busTrafficService) {
 
     private val log: Logger = LoggerFactory.getLogger(BusCalculatorDijkstra::class.java)
 
     val routes = HashMap<String, List<Int>>()
+    val routeSequences = ArrayList<String>()
 
+    /*
+    2022-11-30 18:02:39.981  INFO 12751 --- [           main] k.g.b.calc.BusCalculatorDijkstra         : calculating 165000452 3280 3927 3927
+2022-11-30 18:02:40.098  INFO 12751 --- [           main] k.g.b.c.BusCalculatorDijkstraNodeTotal   : minimumDistance first: 10131.15722971598
+2022-11-30 18:02:40.559  INFO 12751 --- [           main] k.g.b.c.BusCalculatorDijkstraNodeTotal   : minimumDistance first: 0.0
+     */
+
+    /*
+    2022-11-30 18:02:50.053  INFO 12751 --- [           main] k.g.b.calc.BusCalculatorDijkstra         : calculating 165000315 603 148 148
+2022-11-30 18:02:50.174  INFO 12751 --- [           main] k.g.b.c.BusCalculatorDijkstraNodeTotal   : minimumDistance first: 12525.20486447588
+2022-11-30 18:02:50.647  INFO 12751 --- [           main] k.g.b.c.BusCalculatorDijkstraNodeTotal   : minimumDistance first: 0.0
+     */
+
+    /*
+    2022-11-30 18:05:09.580  INFO 12751 --- [           main] k.g.b.calc.BusCalculatorDijkstra         : calculating 168000006 3881 275 275
+2022-11-30 18:05:09.700  INFO 12751 --- [           main] k.g.b.c.BusCalculatorDijkstraNodeTotal   : minimumDistance first: 26224.05808187709
+2022-11-30 18:05:10.159  INFO 12751 --- [           main] k.g.b.c.BusCalculatorDijkstraNodeTotal   : minimumDistance first: 0.0
+     */
     override fun calculate() {
         super.calculate()
 
-        turnPoints.forEach { (k, v) ->
+        routeSequences.addAll(turnPoints.keys)
+
+        calculatePre()
+
+        routeSequences.forEach { k ->
+            val v = turnPoints[k]
+
             val busInfo = routeIdToBusInfo[k]
 
-            if(busInfo != null) {
+            if (busInfo != null) {
                 val stationStart = stationsIdToIndexMap[busInfo.originBusStopId!!]
                 val stationTurn = stationsIdToIndexMap[v]
                 val stationEnd = stationsIdToIndexMap[endPoints[k]]
 
                 log.info("calculating $k $stationStart $stationTurn $stationEnd")
 
-                if(stationStart != null && stationTurn != null && stationEnd != null) {
+                if (stationStart != null && stationTurn != null && stationEnd != null) {
                     val result = ArrayList(executeDijkstra(stationStart, stationTurn))
                     val result2 = ArrayList(executeDijkstra(stationTurn, stationEnd))
 
                     result.addAll(result2)
 
+                    processAfter(busInfo, result)
+
                     routes[k] = result
                 }
             }
         }
+    }
+
+    open fun calculatePre() {
+
+    }
+
+    open fun processAfter(busInfo: BusInfo, trace: List<Int>) {
+
     }
 
     abstract fun executeDijkstra(startIndex: Int, endIndex: Int): List<Int>
@@ -53,7 +88,7 @@ abstract class BusCalculatorDijkstra(
 
         var current = endIndex
 
-        while(true) {
+        while (true) {
             val previous = previousIndices[current]
 
 //            log.info("$previous, $current, $startIndex, $endIndex")
@@ -62,7 +97,7 @@ abstract class BusCalculatorDijkstra(
             previousNodes.add(current)
 
             // 시작 노드에 도달했다는 뜻이므로 break
-            if(previous == startIndex/* || previous == current*/) break
+            if (previous == startIndex || previous == current) break
 
 //            if(previous == current) sleep(1000L)
 
@@ -73,11 +108,11 @@ abstract class BusCalculatorDijkstra(
 
         return previousNodes.reversed()
     }
-    
+
     fun getDistance(traceBack: List<Int>): Double {
         var totalDistance = 0.0
-        
-        for(index in 0 until traceBack.size - 1) {
+
+        for (index in 0 until traceBack.size - 1) {
             val start = traceBack[index]
             val finish = traceBack[index + 1]
 

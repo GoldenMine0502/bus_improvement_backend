@@ -3,6 +3,8 @@ package kr.goldenmine.bus_improvement_backend.controllers
 import com.google.gson.JsonObject
 import kr.goldenmine.bus_improvement_backend.calc.BusCalculator
 import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraMinimumDistance
+import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraNodeTotal
+import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraNodeTotalGreedy
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
 import kr.goldenmine.bus_improvement_backend.util.Point
 import kr.goldenmine.bus_improvement_backend.util.distanceTM127
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RestController
 class BusStatisticsCalculator(
     val busThroughInfoSerivce: BusThroughInfoSerivce,
     val busCalculatorDijkstraMinimumDistance: BusCalculatorDijkstraMinimumDistance,
+    val busCalculatorDijkstraNodeTotal: BusCalculatorDijkstraNodeTotal,
+    val busCalculatorDijkstraNodeTotalGreedy: BusCalculatorDijkstraNodeTotalGreedy,
 ) {
 
     @RequestMapping(
@@ -25,6 +29,106 @@ class BusStatisticsCalculator(
     )
     fun getStatForShortest(): String {
         val calculator = busCalculatorDijkstraMinimumDistance
+
+        val stationsArray = IntArray(calculator.stations.size)
+        var totalCount = 0
+
+        var distanceSum = 0.0
+
+        calculator.routes.forEach { (t, throughs) ->
+            for(index in throughs.indices) {
+                val first = throughs[index]
+                val second = if(index < throughs.size - 1) throughs[index + 1] else first
+
+                if(index < throughs.size - 1) {
+                    val firstStation = calculator.stations[first]
+                    val secondStation = calculator.stations[second]
+                    distanceSum += distanceTM127(
+                        Point(firstStation.posX!!, firstStation.posY!!),
+                        Point(secondStation.posX!!, secondStation.posY!!),
+                    )
+                }
+            }
+
+            throughs.forEach {
+                stationsArray[it]++
+                totalCount++
+            }
+        }
+
+        val usedStations = stationsArray.asSequence().count { it > 0 }
+
+        val jsonObject = JsonObject()
+
+//        val jsonArray = JsonArray()
+//        for(index in stationsArray.indices) {
+//            jsonArray.add(stationsArray[index])
+//        }
+//        jsonObject.add("array", jsonArray)
+        jsonObject.addProperty("usedStations", usedStations)
+        jsonObject.addProperty("totalDistance", distanceSum)
+        jsonObject.addProperty("totalNodes", totalCount)
+
+        return jsonObject.toString()
+    }
+
+    @RequestMapping(
+        value = ["/allnoderoute"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getStatForNode(): String {
+        val calculator = busCalculatorDijkstraNodeTotal
+
+        val stationsArray = IntArray(calculator.stations.size)
+        var totalCount = 0
+
+        var distanceSum = 0.0
+
+        calculator.routes.forEach { (t, throughs) ->
+            for(index in throughs.indices) {
+                val first = throughs[index]
+                val second = if(index < throughs.size - 1) throughs[index + 1] else first
+
+                if(index < throughs.size - 1) {
+                    val firstStation = calculator.stations[first]
+                    val secondStation = calculator.stations[second]
+                    distanceSum += distanceTM127(
+                        Point(firstStation.posX!!, firstStation.posY!!),
+                        Point(secondStation.posX!!, secondStation.posY!!),
+                    )
+                }
+            }
+
+            throughs.forEach {
+                stationsArray[it]++
+                totalCount++
+            }
+        }
+
+        val usedStations = stationsArray.asSequence().count { it > 0 }
+
+        val jsonObject = JsonObject()
+
+//        val jsonArray = JsonArray()
+//        for(index in stationsArray.indices) {
+//            jsonArray.add(stationsArray[index])
+//        }
+//        jsonObject.add("array", jsonArray)
+        jsonObject.addProperty("usedStations", usedStations)
+        jsonObject.addProperty("totalDistance", distanceSum)
+        jsonObject.addProperty("totalNodes", totalCount)
+
+        return jsonObject.toString()
+    }
+
+    @RequestMapping(
+        value = ["/allnodegreedyroute"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getStatForNodeGreedy(): String {
+        val calculator = busCalculatorDijkstraNodeTotalGreedy
 
         val stationsArray = IntArray(calculator.stations.size)
         var totalCount = 0

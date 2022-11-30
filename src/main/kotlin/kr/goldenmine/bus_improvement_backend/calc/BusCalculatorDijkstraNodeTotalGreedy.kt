@@ -17,7 +17,7 @@ import java.util.*
 import kotlin.math.max
 
 @Service
-class BusCalculatorDijkstraNodeTotal(
+class BusCalculatorDijkstraNodeTotalGreedy(
     private val busStopInfoService: BusInfoSerivce,
     private val busStopStationService: BusStopStationSerivce,
     private val busThroughInfoService: BusThroughInfoSerivce,
@@ -25,7 +25,7 @@ class BusCalculatorDijkstraNodeTotal(
     private val busTrafficNodeInfoSerivce: BusTrafficNodeInfoSerivce,
     private val busCalculatorDijkstraMinimumDistance: BusCalculatorDijkstraMinimumDistance,
 ) : BusCalculatorDijkstra(busStopInfoService, busStopStationService, busThroughInfoService, busTrafficService) {
-    private val log: Logger = LoggerFactory.getLogger(BusCalculatorDijkstraNodeTotal::class.java)
+    private val log: Logger = LoggerFactory.getLogger(BusCalculatorDijkstraNodeTotalGreedy::class.java)
 
     // 2시 7분 30초
     override val type: String
@@ -33,6 +33,7 @@ class BusCalculatorDijkstraNodeTotal(
 
     lateinit var adjointMatrixUsers: Array<IntArray>
 
+    var busTransfer = 40
     val busTimes = HashMap<String, Int>()
 
     override fun calculatePre() {
@@ -62,7 +63,6 @@ class BusCalculatorDijkstraNodeTotal(
         for (index in 0 until busTrafficNodeInfoList.size - 1) {
             val start = busTrafficNodeInfoList[index]
             val finish = busTrafficNodeInfoList[index + 1]
-
 
             if (start.routeNo == finish.routeNo && finish.sequence != 0) {
 
@@ -118,12 +118,35 @@ class BusCalculatorDijkstraNodeTotal(
                 busTimes[busInfo.routeId] = count
             }
         }
+
+        routeSequences.sortBy { u1 ->
+            val value1 = routeIdToBusInfo[u1]!!
+//            val value2 = routeIdToBusInfo[u1]!!
+
+//            return value1.minAllocationGap - value2.minAllocationGap!!
+            value1.minAllocationGap
+        }
+    }
+
+    override fun processAfter(busInfo: BusInfo, trace: List<Int>) {
+        for(index in 0 until trace.size - 1) {
+            val start = trace[index]
+            val finish = trace[index + 1]
+            val busTime = busTimes[busInfo.routeId]!!
+
+            adjointMatrixUsers[start][finish] -= busTransfer * busTime
+
+            // 1 이하로 안떨어지게(코스트 무한 X)
+            if(adjointMatrixUsers[start][finish] < 1) {
+                adjointMatrixUsers[start][finish] = 1
+            }
+        }
     }
 
     override fun executeDijkstra(startIndex: Int, endIndex: Int): List<Int> {
         val minimumDistance = getDistance(busCalculatorDijkstraMinimumDistance.executeDijkstra(startIndex, endIndex))
 
-        log.info("minimumDistance first: $minimumDistance")
+        log.info("minimumDistance: $minimumDistance")
 
         val nodes = ArrayList<ArrayList<Node>>()
         // 노드 생성
