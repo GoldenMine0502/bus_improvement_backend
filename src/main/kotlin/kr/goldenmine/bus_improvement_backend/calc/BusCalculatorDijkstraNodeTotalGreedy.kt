@@ -88,7 +88,7 @@ class BusCalculatorDijkstraNodeTotalGreedy(
                 totalUsage += total
             } else {
                 lastSequences.clear()
-                log.info("routeNo: ${finish.routeNo} ${routeNoToBusInfo[finish.routeNo!!]?.routeId} ${start.id}")
+//                log.info("routeNo: ${finish.routeNo} ${routeNoToBusInfo[finish.routeNo!!]?.routeId} ${start.id}")
                 val routeId = routeNoToBusInfo[finish.routeNo!!]?.routeId
                 if(routeId != null) {
                     lastSequences.addAll(sequenceList(routeNoToBusInfo[finish.routeNo]?.routeId!!))
@@ -150,7 +150,7 @@ class BusCalculatorDijkstraNodeTotalGreedy(
     override fun executeDijkstra(startIndex: Int, endIndex: Int): List<Int> {
         val minimumDistance = getDistance(busCalculatorDijkstraMinimumDistance.executeDijkstra(startIndex, endIndex))
 
-        log.info("minimumDistance: $minimumDistance")
+//        log.info("minimumDistance: $minimumDistance")
 
         val nodes = ArrayList<ArrayList<Node>>()
         // 노드 생성

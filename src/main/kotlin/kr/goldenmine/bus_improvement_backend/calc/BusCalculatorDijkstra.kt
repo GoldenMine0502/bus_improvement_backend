@@ -48,6 +48,7 @@ abstract class BusCalculatorDijkstra(
 
         calculatePre()
 
+        var c = 0
         routeSequences.forEach { k ->
             val v = turnPoints[k]
 
@@ -58,7 +59,11 @@ abstract class BusCalculatorDijkstra(
                 val stationTurn = stationsIdToIndexMap[v]
                 val stationEnd = stationsIdToIndexMap[endPoints[k]]
 
-                log.info("calculating $k $stationStart $stationTurn $stationEnd")
+                c++
+                if(c >= 10) {
+                    log.info("calculating $k $stationStart $stationTurn $stationEnd")
+                    c = 0
+                }
 
                 if (stationStart != null && stationTurn != null && stationEnd != null) {
                     val result = ArrayList(executeDijkstra(stationStart, stationTurn))

@@ -84,7 +84,7 @@ class BusCalculatorDijkstraNodeTotal(
                 adjointMatrixUsers[startIndex][finishIndex] += total
             } else {
                 lastSequences.clear()
-                log.info("routeNo: ${finish.routeNo} ${routeNoToBusInfo[finish.routeNo!!]?.routeId} ${start.id}")
+//                log.info("routeNo: ${finish.routeNo} ${routeNoToBusInfo[finish.routeNo!!]?.routeId} ${start.id}")
                 val routeId = routeNoToBusInfo[finish.routeNo!!]?.routeId
                 if(routeId != null) {
                     lastSequences.addAll(sequenceList(routeNoToBusInfo[finish.routeNo]?.routeId!!))
@@ -123,7 +123,7 @@ class BusCalculatorDijkstraNodeTotal(
     override fun executeDijkstra(startIndex: Int, endIndex: Int): List<Int> {
         val minimumDistance = getDistance(busCalculatorDijkstraMinimumDistance.executeDijkstra(startIndex, endIndex))
 
-        log.info("minimumDistance first: $minimumDistance")
+//        log.info("minimumDistance first: $minimumDistance")
 
         val nodes = ArrayList<ArrayList<Node>>()
         // 노드 생성
