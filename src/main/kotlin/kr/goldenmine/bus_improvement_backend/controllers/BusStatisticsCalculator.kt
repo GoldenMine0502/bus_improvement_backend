@@ -1,5 +1,6 @@
 package kr.goldenmine.bus_improvement_backend.controllers
 
+import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kr.goldenmine.bus_improvement_backend.calc.BusCalculator
@@ -9,6 +10,8 @@ import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraNodeTotal
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
 import kr.goldenmine.bus_improvement_backend.util.Point
 import kr.goldenmine.bus_improvement_backend.util.distanceTM127
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -22,6 +25,21 @@ class BusStatisticsCalculator(
     val busCalculatorDijkstraNodeTotal: BusCalculatorDijkstraNodeTotal,
     val busCalculatorDijkstraNodeTotalGreedy: BusCalculatorDijkstraNodeTotalGreedy,
 ) {
+    private val log: Logger = LoggerFactory.getLogger(BusStatisticsCalculator::class.java)
+
+    init {
+
+//        log.info("calculating minimumdistance")
+//        busCalculatorDijkstraMinimumDistance.calculate()
+//
+//        for(i in 1..50) {
+//            log.info("calculating nodetotalgreedy $i")
+//            busCalculatorDijkstraNodeTotalGreedy.busTransfer = i
+//            busCalculatorDijkstraNodeTotalGreedy.calculate()
+//            busCalculatorDijkstraNodeTotalGreedy.busUsageArray
+//            busCalculatorDijkstraNodeTotalGreedy.busUsageArray.add(getStatForNodeGreedy())
+//        }
+    }
 
     @RequestMapping(
         value = ["/allshortestroute"],
@@ -121,6 +139,17 @@ class BusStatisticsCalculator(
         jsonObject.addProperty("totalNodes", totalCount)
 
         return jsonObject.toString()
+    }
+
+    @RequestMapping(
+        value = ["/allnodegreedyroutefromto"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getAllStatForNodeGreedy(): String {
+        val gson = Gson()
+
+        return gson.toJson(busCalculatorDijkstraNodeTotalGreedy.busUsageArray)
     }
 
     // model 3

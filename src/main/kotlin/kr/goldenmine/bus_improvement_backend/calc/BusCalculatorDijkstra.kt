@@ -43,6 +43,7 @@ abstract class BusCalculatorDijkstra(
     override fun calculate() {
         super.calculate()
 
+        routeSequences.clear()
         routeSequences.addAll(turnPoints.keys)
 
         calculatePre()

@@ -40,8 +40,12 @@ class BusCalculatorController(
         }
 
         val t2 = Thread {
-            log.info("calculating nodetotalgreedy")
-            busCalculatorDijkstraNodeTotalGreedy.calculate()
+//            for(i in 1..50) {
+//                log.info("calculating nodetotalgreedy $i")
+//                busCalculatorDijkstraNodeTotalGreedy.busTransfer = i
+                busCalculatorDijkstraNodeTotalGreedy.calculate()
+
+//            }
         }
 
         t1.start()

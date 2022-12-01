@@ -33,11 +33,13 @@ class BusCalculatorDijkstraNodeTotalGreedy(
 
     lateinit var adjointMatrixUsers: Array<IntArray>
     var totalUsage = 0
-
-    var busTransfer = 30
+    var busUsageArray = ArrayList<String>()
+    var busTransfer = 50
     val busTimes = HashMap<String, Int>()
 
     override fun calculatePre() {
+        totalUsage = 0
+
         val stationsSize = stations.size
         adjointMatrixUsers = Array(stationsSize) { IntArray(stationsSize) }
 
