@@ -1,11 +1,9 @@
 package kr.goldenmine.bus_improvement_backend.calc
 
-import kr.goldenmine.bus_improvement_backend.controllers.BusCalculatorController
 import kr.goldenmine.bus_improvement_backend.models.bus.BusInfo
 import kr.goldenmine.bus_improvement_backend.models.bus.BusInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.node.BusTrafficNodeInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationSerivce
-import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfo
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.traffic.BusTrafficSerivce
 import kr.goldenmine.bus_improvement_backend.util.Point
@@ -14,10 +12,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
-import kotlin.math.max
 
 @Service
-class BusCalculatorDijkstraNodeTotalGreedy(
+class BusCalculatorDijkstraNodeTotalGreedy5(
     private val busStopInfoService: BusInfoSerivce,
     private val busStopStationService: BusStopStationSerivce,
     private val busThroughInfoService: BusThroughInfoSerivce,
@@ -25,7 +22,7 @@ class BusCalculatorDijkstraNodeTotalGreedy(
     private val busTrafficNodeInfoSerivce: BusTrafficNodeInfoSerivce,
     private val busCalculatorDijkstraMinimumDistance: BusCalculatorDijkstraMinimumDistance,
 ) : BusCalculatorDijkstra(busStopInfoService, busStopStationService, busThroughInfoService, busTrafficService) {
-    private val log: Logger = LoggerFactory.getLogger(BusCalculatorDijkstraNodeTotalGreedy::class.java)
+    private val log: Logger = LoggerFactory.getLogger(BusCalculatorDijkstraNodeTotalGreedy5::class.java)
 
     // 2시 7분 30초
     override val type: String
@@ -34,7 +31,7 @@ class BusCalculatorDijkstraNodeTotalGreedy(
     lateinit var adjointMatrixUsers: Array<IntArray>
     var totalUsage = 0
     var busUsageArray = ArrayList<String>()
-    var busTransfer = 50
+    var busTransfer = 5
     val busTimes = HashMap<String, Int>()
 
     override fun calculatePre() {

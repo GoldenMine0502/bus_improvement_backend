@@ -18,7 +18,8 @@ class BusCalculatorController(
 
     val busCalculatorDijkstraMinimumDistance: BusCalculatorDijkstraMinimumDistance,
     val busCalculatorDijkstraNodeTotal: BusCalculatorDijkstraNodeTotal,
-    val busCalculatorDijkstraNodeTotalGreedy: BusCalculatorDijkstraNodeTotalGreedy,
+    val busCalculatorDijkstraNodeTotalGreedy5: BusCalculatorDijkstraNodeTotalGreedy5,
+    val busCalculatorDijkstraNodeTotalGreedy25: BusCalculatorDijkstraNodeTotalGreedy25,
 ) {
     private val log: Logger = LoggerFactory.getLogger(BusCalculatorController::class.java)
 
@@ -43,15 +44,26 @@ class BusCalculatorController(
 //            for(i in 1..50) {
 //                log.info("calculating nodetotalgreedy $i")
 //                busCalculatorDijkstraNodeTotalGreedy.busTransfer = i
-                busCalculatorDijkstraNodeTotalGreedy.calculate()
+            busCalculatorDijkstraNodeTotalGreedy5.calculate()
+
+//            }
+        }
+
+        val t3 = Thread {
+//            for(i in 1..50) {
+//                log.info("calculating nodetotalgreedy $i")
+//                busCalculatorDijkstraNodeTotalGreedy.busTransfer = i
+            busCalculatorDijkstraNodeTotalGreedy25.calculate()
 
 //            }
         }
 
         t1.start()
         t2.start()
+        t3.start()
         t1.join()
         t2.join()
+        t3.join()
 
         log.info("all calculated.")
 
@@ -87,27 +99,45 @@ class BusCalculatorController(
     }
 
     @RequestMapping(
-        value = ["/dijkstragreedyroute"],
+        value = ["/dijkstragreedy5route"],
         method = [RequestMethod.GET],
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun getDijkstraGreedyRoute(routeId: String): List<Int>? {
+    fun getDijkstraGreedyRoute5(routeId: String): List<Int>? {
 //        val center = convertWGS84toTM127(Point(x, y))
 //        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
 //        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
-        return busCalculatorDijkstraNodeTotalGreedy.routes[routeId]
+        return busCalculatorDijkstraNodeTotalGreedy5.routes[routeId]
     }
 
     @RequestMapping(
-        value = ["/alldijkstragreedyroute"],
+        value = ["/dijkstragreedy25route"],
         method = [RequestMethod.GET],
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
-    fun getAllDijkstraGreedyRoute(): HashMap<String, List<Int>> {
+    fun getDijkstraGreedyRoute25(routeId: String): List<Int>? {
 //        val center = convertWGS84toTM127(Point(x, y))
 //        val start = convertWGS84toTM127(Point(x - rangeX, y - rangeY))
 //        val finish = convertWGS84toTM127(Point(x + rangeX, y + rangeY))
-        return busCalculatorDijkstraNodeTotalGreedy.routes
+        return busCalculatorDijkstraNodeTotalGreedy25.routes[routeId]
+    }
+
+    @RequestMapping(
+        value = ["/alldijkstragreedy5route"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getAllDijkstraGreedyRoute5(): HashMap<String, List<Int>> {
+        return busCalculatorDijkstraNodeTotalGreedy5.routes
+    }
+
+    @RequestMapping(
+        value = ["/alldijkstragreedy25route"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getAllDijkstraGreedyRoute25(): HashMap<String, List<Int>> {
+        return busCalculatorDijkstraNodeTotalGreedy25.routes
     }
 
     @RequestMapping(

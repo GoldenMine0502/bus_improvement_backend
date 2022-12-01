@@ -6,7 +6,7 @@ import com.google.gson.JsonObject
 import kr.goldenmine.bus_improvement_backend.calc.BusCalculator
 import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraMinimumDistance
 import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraNodeTotal
-import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraNodeTotalGreedy
+import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraNodeTotalGreedy5
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
 import kr.goldenmine.bus_improvement_backend.util.Point
 import kr.goldenmine.bus_improvement_backend.util.distanceTM127
@@ -23,7 +23,7 @@ class BusStatisticsCalculator(
     val busThroughInfoSerivce: BusThroughInfoSerivce,
     val busCalculatorDijkstraMinimumDistance: BusCalculatorDijkstraMinimumDistance,
     val busCalculatorDijkstraNodeTotal: BusCalculatorDijkstraNodeTotal,
-    val busCalculatorDijkstraNodeTotalGreedy: BusCalculatorDijkstraNodeTotalGreedy,
+    val busCalculatorDijkstraNodeTotalGreedy5: BusCalculatorDijkstraNodeTotalGreedy5,
 ) {
     private val log: Logger = LoggerFactory.getLogger(BusStatisticsCalculator::class.java)
 
@@ -149,7 +149,7 @@ class BusStatisticsCalculator(
     fun getAllStatForNodeGreedy(): String {
         val gson = Gson()
 
-        return gson.toJson(busCalculatorDijkstraNodeTotalGreedy.busUsageArray)
+        return gson.toJson(busCalculatorDijkstraNodeTotalGreedy5.busUsageArray)
     }
 
     // model 3
@@ -159,7 +159,7 @@ class BusStatisticsCalculator(
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun getStatForNodeGreedy(): String {
-        val calculator = busCalculatorDijkstraNodeTotalGreedy
+        val calculator = busCalculatorDijkstraNodeTotalGreedy5
 
         val stationsArray = IntArray(calculator.stations.size)
         var totalCount = 0
