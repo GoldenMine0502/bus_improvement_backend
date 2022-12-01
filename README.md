@@ -16,4 +16,6 @@
 
 /stat/allnoderoute - 이용량 루트의 통계입니다.
 
-/stat/allnodegreedynote - 개선된 이용량 루트의 통계입니다.
+/stat/allnodegreedy5note - 개선된 이용량 루트의 통계입니다.
+
+/stat/allnodegreedy25note - 개선된 이용량 루트의 통계입니다.
