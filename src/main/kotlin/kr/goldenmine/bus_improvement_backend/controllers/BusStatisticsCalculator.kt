@@ -3,10 +3,7 @@ package kr.goldenmine.bus_improvement_backend.controllers
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import kr.goldenmine.bus_improvement_backend.calc.BusCalculator
-import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraMinimumDistance
-import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraNodeTotal
-import kr.goldenmine.bus_improvement_backend.calc.BusCalculatorDijkstraNodeTotalGreedy5
+import kr.goldenmine.bus_improvement_backend.calc.*
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
 import kr.goldenmine.bus_improvement_backend.util.Point
 import kr.goldenmine.bus_improvement_backend.util.distanceTM127
@@ -24,11 +21,12 @@ class BusStatisticsCalculator(
     val busCalculatorDijkstraMinimumDistance: BusCalculatorDijkstraMinimumDistance,
     val busCalculatorDijkstraNodeTotal: BusCalculatorDijkstraNodeTotal,
     val busCalculatorDijkstraNodeTotalGreedy5: BusCalculatorDijkstraNodeTotalGreedy5,
+    val busCalculatorDijkstraNodeTotalGreedy25: BusCalculatorDijkstraNodeTotalGreedy25,
+//    val busCalculatorDijkstraNodeTotalGreedy30: BusCalculatorDijkstraNodeTotalGreedy30,
 ) {
     private val log: Logger = LoggerFactory.getLogger(BusStatisticsCalculator::class.java)
 
     init {
-
 //        log.info("calculating minimumdistance")
 //        busCalculatorDijkstraMinimumDistance.calculate()
 //
@@ -159,7 +157,83 @@ class BusStatisticsCalculator(
         produces = [MediaType.APPLICATION_JSON_VALUE]
     )
     fun getStatForNodeGreedy(): String {
+//        val calculator = if(id == 0) busCalculatorDijkstraNodeTotalGreedy20
+//        else if(id == 1) busCalculatorDijkstraNodeTotalGreedy25
+//        else busCalculatorDijkstraNodeTotalGreedy30
+
         val calculator = busCalculatorDijkstraNodeTotalGreedy5
+
+        val stationsArray = IntArray(calculator.stations.size)
+        var totalCount = 0
+
+        var distanceSum = 0.0
+
+        calculator.routes.forEach { (t, throughs) ->
+            for(index in throughs.indices) {
+                val first = throughs[index]
+                val second = if(index < throughs.size - 1) throughs[index + 1] else first
+
+                if(index < throughs.size - 1) {
+                    val firstStation = calculator.stations[first]
+                    val secondStation = calculator.stations[second]
+                    distanceSum += distanceTM127(
+                        Point(firstStation.posX!!, firstStation.posY!!),
+                        Point(secondStation.posX!!, secondStation.posY!!),
+                    )
+                }
+            }
+
+            throughs.forEach {
+                stationsArray[it]++
+                totalCount++
+            }
+        }
+
+        val usedStations = stationsArray.asSequence().count { it > 0 }
+
+        val jsonObject = JsonObject()
+
+        var remain = 0
+        val counts = ArrayList<Int>()
+        repeat(51) {
+            counts.add(0)
+        }
+        calculator.adjointMatrixUsers.forEach { array ->
+            array.forEach {
+                remain += it
+                if(it > 0) {
+                    val k = (it / 500).coerceAtMost(50)
+                    counts[k]++
+                }
+            }
+        }
+        val jsonArray = JsonArray()
+        for(index in counts.indices) {
+            jsonArray.add(counts[index])
+        }
+
+        jsonObject.addProperty("totalUsers", calculator.totalUsage)
+        jsonObject.addProperty("remainUsers", remain)
+        jsonObject.add("histogram500", jsonArray)
+        jsonObject.addProperty("usedStations", usedStations)
+        jsonObject.addProperty("totalDistance", distanceSum)
+        jsonObject.addProperty("totalNodes", totalCount)
+
+        return jsonObject.toString()
+    }
+
+    // model 3
+    @RequestMapping(
+        value = ["/allnodegreedyroute2"],
+        method = [RequestMethod.GET],
+        produces = [MediaType.APPLICATION_JSON_VALUE]
+    )
+    fun getStatForNodeGreedy2(): String {
+//        val calculator = if(id == 0) busCalculatorDijkstraNodeTotalGreedy20
+//        else if(id == 1) busCalculatorDijkstraNodeTotalGreedy25
+//        else busCalculatorDijkstraNodeTotalGreedy30
+
+        val calculator = busCalculatorDijkstraNodeTotalGreedy25
 
         val stationsArray = IntArray(calculator.stations.size)
         var totalCount = 0
