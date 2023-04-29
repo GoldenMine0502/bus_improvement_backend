@@ -59,13 +59,12 @@ class BusCalculatorDijkstraNodeTotal(
         } catch(ex: Exception) {
             log.info("first route is null")
         }
+
         for (index in 0 until busTrafficNodeInfoList.size - 1) {
             val start = busTrafficNodeInfoList[index]
             val finish = busTrafficNodeInfoList[index + 1]
 
-
             if (start.routeNo == finish.routeNo && finish.sequence != 0) {
-
                 // 일부 인천-부천 노선이나 광역버스들
                 if(lastSequences.size == 0) continue
 
