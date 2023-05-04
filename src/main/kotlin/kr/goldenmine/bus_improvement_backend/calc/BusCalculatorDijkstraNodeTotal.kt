@@ -1,11 +1,8 @@
 package kr.goldenmine.bus_improvement_backend.calc
 
-import kr.goldenmine.bus_improvement_backend.controllers.BusCalculatorController
-import kr.goldenmine.bus_improvement_backend.models.bus.BusInfo
 import kr.goldenmine.bus_improvement_backend.models.bus.BusInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.node.BusTrafficNodeInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.station.BusStopStationSerivce
-import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfo
 import kr.goldenmine.bus_improvement_backend.models.through.BusThroughInfoSerivce
 import kr.goldenmine.bus_improvement_backend.models.traffic.BusTrafficSerivce
 import kr.goldenmine.bus_improvement_backend.util.Point
@@ -14,7 +11,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
-import kotlin.math.max
 
 @Service
 class BusCalculatorDijkstraNodeTotal(

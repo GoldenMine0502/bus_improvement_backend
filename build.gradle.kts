@@ -38,6 +38,9 @@ dependencies {
     // gson
     implementation("com.google.code.gson:gson:2.9.1")
 
+    // https://mvnrepository.com/artifact/com.opencsv/opencsv
+    implementation("com.opencsv:opencsv:5.7.1")
+
     // https://mvnrepository.com/artifact/com.h2database/h2
     implementation(group="com.h2database", name="h2", version="2.1.214")
 
