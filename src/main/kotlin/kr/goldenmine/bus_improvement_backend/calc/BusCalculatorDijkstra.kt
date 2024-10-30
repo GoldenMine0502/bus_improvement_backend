@@ -135,4 +135,24 @@ abstract class BusCalculatorDijkstra(
 
         return totalDistance
     }
+
+    fun parseBusTimeHour(busTime: String): Int {
+        return when(busTime.length) {
+            1 -> 0
+            2 -> 0
+            3 -> busTime.substring(0, 1).toInt()
+            4 -> busTime.substring(0, 2).toInt()
+            else -> throw RuntimeException("cannot parse bus time(h)")
+        }
+    }
+
+    fun parseBusTimeMinute(busTime: String): Int {
+        return when(busTime.length) {
+            1 -> busTime.substring(0, 1).toInt()
+            2 -> busTime.substring(0, 2).toInt()
+            3 -> busTime.substring(1, 3).toInt()
+            4 -> busTime.substring(2, 4).toInt()
+            else -> throw RuntimeException("cannot parse bus time(m)")
+        }
+    }
 }

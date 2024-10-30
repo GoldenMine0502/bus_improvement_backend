@@ -99,14 +99,10 @@ class BusCalculatorDijkstraNodeTotal(
                 busInfo.maxAllocationGap != null && busInfo.minAllocationGap != null &&
                 busInfo.routeId != null
             ) {
-                val startH = if (busInfo.busStartTime.length == 4) busInfo.busStartTime.substring(0, 2)
-                    .toInt() else busInfo.busStartTime.substring(0, 1).toInt()
-                val startM = if (busInfo.busStartTime.length == 4) busInfo.busStartTime.substring(3, 4)
-                    .toInt() else busInfo.busStartTime.substring(1, 3).toInt()
-                val finishH = if (busInfo.busFinishTime.length == 4) busInfo.busFinishTime.substring(0, 2)
-                    .toInt() else busInfo.busFinishTime.substring(0, 1).toInt()
-                val finishM = if (busInfo.busFinishTime.length == 4) busInfo.busFinishTime.substring(3, 4)
-                    .toInt() else busInfo.busFinishTime.substring(1, 3).toInt()
+                val startH = parseBusTimeHour(busInfo.busStartTime)
+                val startM = parseBusTimeMinute(busInfo.busStartTime)
+                val finishH = parseBusTimeHour(busInfo.busFinishTime)
+                val finishM = parseBusTimeMinute(busInfo.busFinishTime)
 
                 val startTotal = startH * 60 + startM
                 val finishTotal = (finishH * 60 + finishM).let { if (it < startTotal) it + 24 * 60 else it }
