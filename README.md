@@ -7,7 +7,7 @@
 
 기술스택: Kotlin, Retrofit, Selenium, Hibernate, MySQL, Spring, JavaScript, React
 
-버스 개선 프로젝트에 대한 개괄적인 정보는 백엔드에서 확인해주세요.
+버스 개선 프로젝트에 대한 자세한 정보는 프론트 창에서 확인해주세요.
 
 서비스: http://web.goldenmine.kr:3000/ (언제 닫힐진 모름)
 
